@@ -6,7 +6,9 @@ public enum ProtocolVersion {
 	MINECRAFT_1_8(47, 9, "1.8"),
 	MINECRAFT_1_7_10(5, 8, "1.7.10"),
 	MINECRAFT_1_7_5(4, 7, "1.7.5"),
+	MINECRAFT_1_7_1(3, 7, "1.7.1"),
 	MINECRAFT_1_6_4(78, 6, "1.6.4"),
+	MINECRAFT_1_6_3(77, 6, "1.6.3"),
 	MINECRAFT_1_6_2(74, 5, "1.6.2"),
 	MINECRAFT_1_6_1(73, 4, "1.6.1"),
 	MINECRAFT_1_5_2(61, 3, "1.5.2"),
@@ -90,6 +92,9 @@ public enum ProtocolVersion {
 			}
 			case 78: {
 				return MINECRAFT_1_6_4;
+			}
+			case 77: {
+				return MINECRAFT_1_6_3;
 			}
 			case 74: {
 				return MINECRAFT_1_6_2;

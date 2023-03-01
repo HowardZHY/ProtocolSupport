@@ -12,6 +12,9 @@ public class ProtocolUtils {
 			case 78: {
 				return ProtocolVersion.MINECRAFT_1_6_4;
 			}
+			case 77: {
+				return ProtocolVersion.MINECRAFT_1_6_3;
+			}
 			case 74: {
 				return ProtocolVersion.MINECRAFT_1_6_2;
 			}

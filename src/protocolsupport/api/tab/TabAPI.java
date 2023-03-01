@@ -1,32 +1,27 @@
 package protocolsupport.api.tab;
 
+import java.io.IOException;
+
 import org.apache.commons.lang3.Validate;
+import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-import protocolsupport.api.ProtocolSupportAPI;
+import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerListHeaderFooter;
+import protocolsupport.api.ProtocolVersion;
+import protocolsupport.api.chat.ChatAPI;
 import protocolsupport.api.chat.components.BaseComponent;
-import protocolsupport.zplatform.ServerPlatform;
+import protocolsupport.api.chat.components.TextComponent;
+import protocolsupport.protocol.RecyclablePacketDataSerializer;
 
 public class TabAPI {
 
-	private TabAPI() {
-	}
+	private static int maxTabSize = Math.min(Bukkit.getMaxPlayers(), 60);
 
-	private static int maxTabSize = -1;
-
-	/**
-	 * Returns max player list size<br>
-	 * Negative return value indicates that forced player list size is not set
-	 * @return max player list size
-	 */
 	public static int getMaxTabSize() {
 		return maxTabSize;
 	}
 
-	/**
-	 * Sets max player list size
-	 * @param maxSize max player list size
-	 */
 	public static void setMaxTabSize(int maxSize) {
 		maxTabSize = maxSize;
 	}
@@ -35,49 +30,39 @@ public class TabAPI {
 	private static BaseComponent currentHeader;
 	private static BaseComponent currentFooter;
 
-	/**
-	 * Sets default player list header that is sent 1 tick after player join
-	 * @param header footer
-	 */
 	public static void setDefaultHeader(BaseComponent header) {
 		currentHeader = header;
 	}
 
-	/**
-	 * Sets default player list footer that is sent 1 tick after player join
-	 * @param footer footer
-	 */
 	public static void setDefaultFooter(BaseComponent footer) {
 		currentFooter = footer;
 	}
 
-	/**
-	 * Returns default header <br>
-	 * Returns null if header is not set
-	 * @return default header
-	 */
 	public static BaseComponent getDefaultHeader() {
 		return currentHeader;
 	}
 
-	/**
-	 * Returns default footer <br>
-	 * Returns null if footer is not set
-	 * @return default header
-	 */
 	public static BaseComponent getDefaultFooter() {
 		return currentFooter;
 	}
 
-	/**
-	 * Sends header and footer to player
-	 * @param player player
-	 * @param header header
-	 * @param footer footer
-	 */
+	private static final BaseComponent empty = new TextComponent("");
+
 	public static void sendHeaderFooter(Player player, BaseComponent header, BaseComponent footer) {
 		Validate.notNull(player, "Player can't be null");
-		ProtocolSupportAPI.getConnection(player).sendPacket(ServerPlatform.get().getPacketFactory().createTabHeaderFooterPacket(header, footer));
+		RecyclablePacketDataSerializer serializer = RecyclablePacketDataSerializer.create(ProtocolVersion.getLatest());
+		try {
+			serializer.writeString(ChatAPI.toJSON(header != null ? header : empty));
+			serializer.writeString(ChatAPI.toJSON(footer != null ? footer : empty));
+			PacketPlayOutPlayerListHeaderFooter packet = new PacketPlayOutPlayerListHeaderFooter();
+			try {
+				packet.a(serializer);
+			} catch (IOException e) {
+			}
+			((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+		} finally {
+			serializer.release();
+		}
 	}
 
 }

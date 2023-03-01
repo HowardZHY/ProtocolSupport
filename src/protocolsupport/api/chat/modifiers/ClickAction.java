@@ -3,12 +3,10 @@ package protocolsupport.api.chat.modifiers;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import protocolsupport.utils.reflection.ReflectionUtils;
-
 public class ClickAction {
 
-	private final Type type;
-	private final String value;
+	private Type type;
+	private String value;
 
 	public ClickAction(Type action, String value) {
 		this.type = action;
@@ -35,18 +33,8 @@ public class ClickAction {
 		throw new IllegalStateException(type + " is not an " + Type.OPEN_URL);
 	}
 
-	@Override
-	public ClickAction clone() {
-		return new ClickAction(type, value);
-	}
-
-	@Override
-	public String toString() {
-		return ReflectionUtils.toStringAllFields(this);
-	}
-
-	public enum Type {
-		OPEN_URL, OPEN_FILE, RUN_COMMAND, SUGGEST_COMMAND, CHANGE_PAGE, COPY_TO_CLIPBOARD;
+	public static enum Type {
+		OPEN_URL, OPEN_FILE, RUN_COMMAND, TWITCH_USER_INFO, SUGGEST_COMMAND, CHANGE_PAGE;
 	}
 
 }

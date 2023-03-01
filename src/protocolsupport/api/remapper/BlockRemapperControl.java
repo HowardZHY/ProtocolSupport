@@ -1,63 +1,46 @@
 package protocolsupport.api.remapper;
 
-import org.apache.commons.lang3.Validate;
-import org.bukkit.block.data.BlockData;
+import org.bukkit.Material;
 
-import protocolsupport.api.MaterialAPI;
 import protocolsupport.api.ProtocolVersion;
-import protocolsupport.protocol.typeremapper.block.BlockDataLegacyDataRegistry;
-import protocolsupport.protocol.typeremapper.utils.MappingTable.ArrayBasedIntMappingTable;
+import protocolsupport.protocol.typeremapper.id.IdRemapper;
+import protocolsupport.protocol.typeremapper.id.RemappingTable;
 
 public class BlockRemapperControl {
 
-	/**
-	 * Resets all block remaps to default ones
-	 */
-	public static void resetToDefault() {
-		BlockDataLegacyDataRegistry.INSTANCE.applyDefault();
-	}
-
-	protected final ArrayBasedIntMappingTable table;
+	private final RemappingTable table;
 
 	public BlockRemapperControl(ProtocolVersion version) {
-		Validate.isTrue(version.isSupported(), "Can't control block remapping for unsupported version");
-		table = BlockDataLegacyDataRegistry.INSTANCE.getTable(version);
+		switch (version) {
+			case MINECRAFT_1_8: {
+				throw new IllegalArgumentException("Remapper for version "+version+" doesn't exist");
+			}
+			case UNKNOWN: {
+				throw new IllegalArgumentException(version+" is not a valid protocol version");
+			}
+			default: {
+				table = IdRemapper.BLOCK.getTable(version);
+				break;
+			}
+		}
 	}
 
-	/**
-	 * Sets remap from one blockstate runtime id to another
-	 * @param from blockstate runtime id which will be remapped
-	 * @param to blockstate runtime id to which remap will occur
-	 */
+	@SuppressWarnings("deprecation")
+	public void setRemap(Material from, Material to) {
+		setRemap(from.getId(), to.getId());
+	}
+
 	public void setRemap(int from, int to) {
-		table.set(from, to);
+		table.setRemap(from, to);
 	}
 
-	/**
-	 * Returns remap for specified blockstate runtime id
-	 * @param id blockstate runtime od id
-	 * @return remap for specified blockstate runtime id
-	 */
+	@SuppressWarnings("deprecation")
+	public Material getRemap(Material material) {
+		return Material.getMaterial(getRemap(material.getId()));
+	}
+
 	public int getRemap(int id) {
-		return table.get(id);
-	}
-
-	/**
-	 * Sets remap from one blockstate runtime id to another
-	 * @param from blockstate which will be remapped
-	 * @param to blockstate to which remap will occur
-	 */
-	public void setRemap(BlockData from, BlockData to) {
-		table.set(MaterialAPI.getBlockDataNetworkId(from), MaterialAPI.getBlockDataNetworkId(to));
-	}
-
-	/**
-	 * Returns remap for specified blockstate runtime id
-	 * @param id blockstate runtime od id
-	 * @return remap for specified blockstate runtime id
-	 */
-	public BlockData getRemap(BlockData id) {
-		return MaterialAPI.getBlockDataByNetworkId(table.get(MaterialAPI.getBlockDataNetworkId(id)));
+		return table.getRemap(id);
 	}
 
 }

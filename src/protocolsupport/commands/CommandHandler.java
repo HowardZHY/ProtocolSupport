@@ -1,12 +1,10 @@
 package protocolsupport.commands;
 
 import java.util.Arrays;
-import java.util.LinkedHashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,64 +12,69 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
+import net.minecraft.server.v1_8_R3.MinecraftServer;
+import net.minecraft.server.v1_8_R3.PropertyManager;
+import protocolsupport.api.ProtocolSupportAPI;
+import protocolsupport.api.ProtocolVersion;
+
 public class CommandHandler implements CommandExecutor, TabCompleter {
 
-	private final Map<String, SubCommand> subcommands = new LinkedHashMap<>();
-
-	public CommandHandler() {
-		subcommands.put("buildinfo", new BuildInfoSubCommand());
-		subcommands.put("debug", new DebugSubCommand());
-		subcommands.put("leakdetector", new LeakDetectorSubCommand());
-		subcommands.put("list", new PlayerListSubCommand());
-		subcommands.put("connections", new ConnectionsListSubCommand());
-		subcommands.put("help", new SubCommand() {
-			@Override
-			public int getMinArgs() {
-				return 0;
-			}
-
-			@Override
-			public boolean handle(CommandSender sender, String[] args) {
-				String prepend = sender instanceof Player ? "/" : "";
-				for (Entry<String, SubCommand> entry : subcommands.entrySet()) {
-					sender.sendMessage(ChatColor.YELLOW + prepend + "ps " + entry.getKey() + " - " + entry.getValue().getHelp());
-				}
-				return true;
-			}
-
-			@Override
-			public String getHelp() {
-				return "prints help";
-			}
-		});
-	}
+	private static final String DEBUG_PROPERTY = "debug";
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!sender.hasPermission("protocolsupport.admin")) {
-			sender.sendMessage(ChatColor.DARK_RED + "You have no power here!");
+			sender.sendMessage(ChatColor.RED + "You have no power here!");
 			return true;
 		}
-		if (args.length == 0) {
-			return false;
-		}
-		SubCommand subcommand = subcommands.get(args[0]);
-		if (subcommand == null) {
-			return false;
-		}
-		String[] subcommandargs = Arrays.copyOfRange(args, 1, args.length);
-		if (subcommandargs.length < subcommand.getMinArgs()) {
-			sender.sendMessage(ChatColor.DARK_RED + "Not enough args");
+		if ((args.length == 1) && args[0].equalsIgnoreCase("list")) {
+			for (ProtocolVersion version : ProtocolVersion.values()) {
+				if (version.getName() != null) {
+					sender.sendMessage(ChatColor.GOLD+"["+version.getName()+"]: "+ChatColor.GREEN+getPlayersStringForProtocol(version));
+				}
+			}
 			return true;
 		}
-		return subcommand.handle(sender, subcommandargs);
+		if (args.length == 1 && args[0].equalsIgnoreCase("debug")) {
+			PropertyManager manager = MinecraftServer.getServer().getPropertyManager();
+			if (!manager.getBoolean(DEBUG_PROPERTY, false)) {
+				manager.setProperty(DEBUG_PROPERTY, Boolean.TRUE);
+				sender.sendMessage(ChatColor.GOLD + "Enabled debug");
+			} else {
+				manager.setProperty(DEBUG_PROPERTY, Boolean.FALSE);
+				sender.sendMessage(ChatColor.GOLD + "Disabled debug");
+			}
+			return true;
+		}
+		return false;
+	}
+
+	private String getPlayersStringForProtocol(ProtocolVersion version) {
+		StringBuilder sb = new StringBuilder();
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			if (ProtocolSupportAPI.getProtocolVersion(player) == version) {
+				sb.append(player.getName());
+				sb.append(", ");
+			}
+		}
+		if (sb.length() > 2) {
+			sb.delete(sb.length() - 2, sb.length());
+		}
+		return sb.toString();
 	}
 
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
-		return subcommands.keySet().stream()
-		.filter(subcommand -> subcommand.startsWith(args[0]))
-		.collect(Collectors.toList());
+		if (args[0].isEmpty()) {
+			return Arrays.asList("list", "debug");
+		}
+		if ("list".startsWith(args[0])) {
+			return Collections.singletonList("list");
+		}
+		if ("debug".startsWith(args[0])) {
+			return Collections.singletonList("debug");
+		}
+		return Collections.emptyList();
 	}
 
 }

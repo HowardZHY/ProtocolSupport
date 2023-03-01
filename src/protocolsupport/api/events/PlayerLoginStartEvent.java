@@ -1,48 +1,68 @@
 package protocolsupport.api.events;
 
 import java.net.InetSocketAddress;
+import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 
-import protocolsupport.api.Connection;
+public class PlayerLoginStartEvent extends PlayerEvent {
 
-/**
- * This event is fired after receiving client username (login start packet)
- */
-public class PlayerLoginStartEvent extends PlayerAbstractLoginEvent {
+	private final String hostname;
+	private boolean onlinemode;
+	private boolean useonlinemodeuuid;
+	private UUID uuid;
+	private String denyLoginMessage;
 
-	protected boolean onlinemode;
-
-	public PlayerLoginStartEvent(Connection connection) {
-		super(connection);
-		this.onlinemode = Bukkit.getOnlineMode();
+	public PlayerLoginStartEvent(InetSocketAddress address, String username, boolean onlinemode, boolean useonlinemodeuuid, String hostname) {
+		super(address, username);
+		this.onlinemode = onlinemode;
+		this.useonlinemodeuuid = useonlinemodeuuid;
+		this.hostname = hostname;
 	}
 
-	/**
-	 * Returns hostname which player used when connecting to server<br>
-	 * Is a shortcut to {@link Connection#getVirtualHost()}.{@link InetSocketAddress#toString() toString()}
-	 * @return hostname which player used when connecting to server
-	 */
 	public String getHostname() {
-		return connection.getVirtualHost().toString();
+		return hostname;
 	}
 
-	/**
-	 * Returns true if online-mode checks will be used to auth player <br>
-	 * By default returns same value as server online-mode setting
-	 * @return true if online-mode checks will be used to auth player
-	 */
 	public boolean isOnlineMode() {
 		return onlinemode;
 	}
 
-	/**
-	 * Sets if online-mode checks will be used to auth player
-	 * @param onlinemode if online-mode checks will be used to auth player
-	 */
 	public void setOnlineMode(boolean onlinemode) {
 		this.onlinemode = onlinemode;
+	}
+
+	public boolean useOnlineModeUUID() {
+		return useonlinemodeuuid;
+	}
+
+	public void setUseOnlineModeUUID(boolean useonlinemodeuuid) {
+		this.useonlinemodeuuid = useonlinemodeuuid;
+	}
+
+	public boolean hasForcedUUID() {
+		return uuid != null;
+	}
+
+	public void setForcedUUID(UUID uuid) {
+		this.uuid = uuid;
+	}
+
+	public UUID getForcedUUID() {
+		return uuid;
+	}
+
+
+	public boolean isLoginDenied() {
+		return denyLoginMessage != null;
+	}
+
+	public String getDenyLoginMessage() {
+		return denyLoginMessage;
+	}
+
+	public void denyLogin(String message) {
+		this.denyLoginMessage = message;
 	}
 
 

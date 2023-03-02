@@ -5,15 +5,19 @@ public enum ProtocolVersion {
 	MINECRAFT_FUTURE(-1, 10),
 	MINECRAFT_1_8(47, 9, "1.8"),
 	MINECRAFT_1_7_10(5, 8, "1.7.10"),
-	MINECRAFT_1_7_5(4, 7, "1.7.5"),
+	MINECRAFT_1_7_5(4, 7, "1.7.2"),
 	MINECRAFT_1_7_1(3, 7, "1.7.1"),
 	MINECRAFT_1_6_4(78, 6, "1.6.4"),
 	MINECRAFT_1_6_3(77, 6, "1.6.3"),
 	MINECRAFT_1_6_2(74, 5, "1.6.2"),
 	MINECRAFT_1_6_1(73, 4, "1.6.1"),
 	MINECRAFT_1_5_2(61, 3, "1.5.2"),
+	MINECRAFT_2_0_Purple(92, 2, "2.0Purple"),
+	MINECRAFT_2_0_Red(91, 2, "2.0Red"),
+	MINECRAFT_2_0_Blue(90, 2, "2.0Blue"),
 	MINECRAFT_1_5_1(60, 2, "1.5.1"),
 	MINECRAFT_1_4_7(51, 1, "1.4.7"),
+	MINECRAFT_1_4_5(49, 1, "1.4.5"),
 	MINECRAFT_LEGACY(-1, 0),
 	UNKNOWN(-1);
 
@@ -90,6 +94,9 @@ public enum ProtocolVersion {
 			case 4: {
 				return MINECRAFT_1_7_5;
 			}
+			case 3: {
+				return MINECRAFT_1_7_1;
+			}
 			case 78: {
 				return MINECRAFT_1_6_4;
 			}
@@ -105,11 +112,23 @@ public enum ProtocolVersion {
 			case 61: {
 				return MINECRAFT_1_5_2;
 			}
+			case 92: {
+				return MINECRAFT_2_0_Purple;
+			}
+			case 91: {
+				return MINECRAFT_2_0_Red;
+			}
+			case 90: {
+				return MINECRAFT_2_0_Blue;
+			}
 			case 60: {
 				return MINECRAFT_1_5_1;
 			}
 			case 51: {
 				return MINECRAFT_1_4_7;
+			}
+			case 49: {
+				return MINECRAFT_1_4_5;
 			}
 		}
 		return UNKNOWN;

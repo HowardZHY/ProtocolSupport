@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="BuildProcessor" level="project" />
+    <orderEntry type="library" name="BurritoSpigot" level="project" />
   </component>
 </module>

@@ -8,12 +8,12 @@ import protocolsupport.api.ProtocolVersion;
 public class ProtocolVersionsHelper {
 
 	public static final ProtocolVersion[] BEFORE_1_5 = new ProtocolVersion[] {
-		ProtocolVersion.MINECRAFT_1_4_7
+		ProtocolVersion.MINECRAFT_1_4_5, ProtocolVersion.MINECRAFT_1_4_7
 	};
 
 	public static final ProtocolVersion[] BEFORE_1_6 = concat(
 		BEFORE_1_5,
-		ProtocolVersion.MINECRAFT_1_5_2, ProtocolVersion.MINECRAFT_1_5_1
+		ProtocolVersion.MINECRAFT_1_5_1, ProtocolVersion.MINECRAFT_2_0_Blue, ProtocolVersion.MINECRAFT_2_0_Red, ProtocolVersion.MINECRAFT_2_0_Purple, ProtocolVersion.MINECRAFT_1_5_2
 	);
 
 	public static final ProtocolVersion[] BEFORE_1_7 = concat(
@@ -23,7 +23,7 @@ public class ProtocolVersionsHelper {
 
 	public static final ProtocolVersion[] BEFORE_1_8 = concat(
 		BEFORE_1_7,
-		ProtocolVersion.MINECRAFT_1_7_5, ProtocolVersion.MINECRAFT_1_7_10
+		ProtocolVersion.MINECRAFT_1_7_1, ProtocolVersion.MINECRAFT_1_7_5, ProtocolVersion.MINECRAFT_1_7_10
 	);
 
 	public static final ProtocolVersion[] BEFORE_1_9 = concat(BEFORE_1_8, ProtocolVersion.MINECRAFT_1_8);

@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="BurritoSpigot">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/BurritoSpigot.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/libs/BurritoSpigot.jar!/" />
+    </SOURCES>
+  </library>
+</component>

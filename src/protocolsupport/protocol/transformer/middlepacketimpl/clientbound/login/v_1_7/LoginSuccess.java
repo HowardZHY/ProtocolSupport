@@ -14,6 +14,9 @@ public class LoginSuccess extends MiddleLoginSuccess<RecyclableCollection<Packet
 		if (version == ProtocolVersion.MINECRAFT_1_7_5) {
 			uuidstring = uuidstring.replace("-", "");
 		}
+		if (version == ProtocolVersion.MINECRAFT_1_7_1) {
+			uuidstring = uuidstring.replace("-", "");
+		}
 		PacketData serializer = PacketData.create(ClientBoundPacket.LOGIN_SUCCESS_ID, version);
 		serializer.writeString(uuidstring);
 		serializer.writeString(name);

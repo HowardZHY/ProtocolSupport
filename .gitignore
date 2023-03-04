@@ -3,6 +3,7 @@ bin/
 build/
 target/
 libs/
+out/
 .externalToolBuilders/
  # Eclipse Files #
 *.project

@@ -48,6 +48,7 @@ public class IdRemapper {
 			registerRemapEntry(197, 64, ProtocolVersionsHelper.BEFORE_1_8);
 			// inverted daylight detector -> daylight detector
 			registerRemapEntry(178, 151, ProtocolVersionsHelper.BEFORE_1_8);
+
 			// stained glass -> glass
 			registerRemapEntry(95, 20, ProtocolVersionsHelper.BEFORE_1_7);
 			// stained glass pane -> glass pane
@@ -60,10 +61,11 @@ public class IdRemapper {
 			registerRemapEntry(163, 53, ProtocolVersionsHelper.BEFORE_1_7);
 			// dark oak stairs -> oak stairs
 			registerRemapEntry(164, 53, ProtocolVersionsHelper.BEFORE_1_7);
-			// tall plant -> yellow flower
-			registerRemapEntry(175, 38, ProtocolVersionsHelper.BEFORE_1_7);
 			// packed ice -> snow
 			registerRemapEntry(174, 80, ProtocolVersionsHelper.BEFORE_1_7);
+			// tall plant -> yellow flower
+			registerRemapEntry(175, 38, ProtocolVersionsHelper.BEFORE_1_7);
+
 			// stained clay -> clay
 			registerRemapEntry(159, 82, ProtocolVersionsHelper.BEFORE_1_6);
 			// hay bale -> stone
@@ -74,34 +76,33 @@ public class IdRemapper {
 			registerRemapEntry(172, 82, ProtocolVersionsHelper.BEFORE_1_6);
 			// coal block -> stone
 			registerRemapEntry(173, 1, ProtocolVersionsHelper.BEFORE_1_6);
-			// dropper -> stone
-			registerRemapEntry(178, 1, ProtocolVersionsHelper.BEFORE_1_5);
-			// hopper -> stone
-			registerRemapEntry(154, 1, ProtocolVersionsHelper.BEFORE_1_5);
-			// quartz -> snow
-			registerRemapEntry(155, 80, ProtocolVersionsHelper.BEFORE_1_5);
-			// quartz stairs -> stairs
-			registerRemapEntry(156, 109, ProtocolVersionsHelper.BEFORE_1_5);
-			// quartz slab -> slab
-			registerRemapEntry(156, 44, ProtocolVersionsHelper.BEFORE_1_5);
-			// inverted daylight detector -> stone
-			registerRemapEntry(178, 1, ProtocolVersionsHelper.BEFORE_1_5);
-			// daylight detector -> slab
-			registerRemapEntry(151, 44, ProtocolVersionsHelper.BEFORE_1_5);
+
 			// trapped chest -> chest
 			registerRemapEntry(146, 54, ProtocolVersionsHelper.BEFORE_1_5);
-			// redstone block -> glowing redstone ore
-			registerRemapEntry(146, 73, ProtocolVersionsHelper.BEFORE_1_5);
-			// activator rail -> some other rail
-			registerRemapEntry(157, 28, ProtocolVersionsHelper.BEFORE_1_5);
-			// nether quartz ore -> nettherrack
-			registerRemapEntry(153, 87, ProtocolVersionsHelper.BEFORE_1_5);
 			// wpressure plate light -> wood pressure plate
 			registerRemapEntry(147, 72, ProtocolVersionsHelper.BEFORE_1_5);
 			// wpressure plate heavy -> stone pressure plate
 			registerRemapEntry(148, 70, ProtocolVersionsHelper.BEFORE_1_5);
 			// redstone comparator -> repeater
 			registerRemapEntry(149, 93, ProtocolVersionsHelper.BEFORE_1_5);
+			// daylight detector -> slab
+			registerRemapEntry(151, 44, ProtocolVersionsHelper.BEFORE_1_5);
+			// redstone block -> glowing redstone ore
+			registerRemapEntry(152, 73, ProtocolVersionsHelper.BEFORE_1_5);
+			// nether quartz ore -> nettherrack
+			registerRemapEntry(153, 87, ProtocolVersionsHelper.BEFORE_1_5);
+			// hopper -> cauldron
+			registerRemapEntry(154, 118, ProtocolVersionsHelper.BEFORE_1_5);
+			// quartz -> snow
+			registerRemapEntry(155, 80, ProtocolVersionsHelper.BEFORE_1_5);
+			// quartz stairs -> stairs
+			registerRemapEntry(156, 109, ProtocolVersionsHelper.BEFORE_1_5);
+			// activator rail -> some other rail
+			registerRemapEntry(157, 28, ProtocolVersionsHelper.BEFORE_1_5);
+			// dropper -> furnace
+			registerRemapEntry(158, 61, ProtocolVersionsHelper.BEFORE_1_5);
+			// inverted daylight detector -> slab
+			registerRemapEntry(178, 44, ProtocolVersionsHelper.BEFORE_1_5);
 		}
 		@Override
 		protected RemappingTable createTable() {
@@ -130,17 +131,25 @@ public class IdRemapper {
 			registerRemapEntry(424, 366, ProtocolVersionsHelper.BEFORE_1_8);
 			// banner -> sign
 			registerRemapEntry(425, 323, ProtocolVersionsHelper.BEFORE_1_8);
-			// everything else -> stone
-			registerRemapEntry(409, 1, ProtocolVersionsHelper.BEFORE_1_8);
-			registerRemapEntry(410, 1, ProtocolVersionsHelper.BEFORE_1_8);
-			registerRemapEntry(414, 1, ProtocolVersionsHelper.BEFORE_1_8);
-			registerRemapEntry(415, 1, ProtocolVersionsHelper.BEFORE_1_8);
-			registerRemapEntry(416, 1, ProtocolVersionsHelper.BEFORE_1_8);
-			registerRemapEntry(417, 1, ProtocolVersionsHelper.BEFORE_1_6);
-			registerRemapEntry(418, 1, ProtocolVersionsHelper.BEFORE_1_6);
-			registerRemapEntry(419, 1, ProtocolVersionsHelper.BEFORE_1_6);
-			registerRemapEntry(420, 1, ProtocolVersionsHelper.BEFORE_1_6);
-			registerRemapEntry(421, 1, ProtocolVersionsHelper.BEFORE_1_6);
+			// prismarine 2 blaze powder
+			registerRemapEntry(409, 171, ProtocolVersionsHelper.BEFORE_1_8);
+			registerRemapEntry(410, 179, ProtocolVersionsHelper.BEFORE_1_8);
+			// rabbit foot 2 fermented spider eye
+			registerRemapEntry(414, 178, ProtocolVersionsHelper.BEFORE_1_8);
+			// rabbit leather
+			registerRemapEntry(415, 334, ProtocolVersionsHelper.BEFORE_1_8);
+			registerRemapEntry(416, 280, ProtocolVersionsHelper.BEFORE_1_8);
+
+			// cmd block mincart
+			registerRemapEntry(422, 328, ProtocolVersionsHelper.BEFORE_1_7);
+
+			// horst armor 2 saddle
+			registerRemapEntry(417, 329, ProtocolVersionsHelper.BEFORE_1_6);
+			registerRemapEntry(418, 329, ProtocolVersionsHelper.BEFORE_1_6);
+			registerRemapEntry(419, 329, ProtocolVersionsHelper.BEFORE_1_6);
+			// leash & nametag 2 wood stick
+			registerRemapEntry(420, 280, ProtocolVersionsHelper.BEFORE_1_6);
+			registerRemapEntry(421, 280, ProtocolVersionsHelper.BEFORE_1_6);
 			// minecarts -> default minecart
 			registerRemapEntry(407, 328, ProtocolVersionsHelper.BEFORE_1_5);
 			registerRemapEntry(408, 328, ProtocolVersionsHelper.BEFORE_1_5);
@@ -161,12 +170,16 @@ public class IdRemapper {
 		{
 			// endermite -> silverfish
 			registerRemapEntry(67, 60, ProtocolVersionsHelper.BEFORE_1_8);
-			// guardian -> sqiud
+			// guardian -> squid
 			registerRemapEntry(68, 94, ProtocolVersionsHelper.BEFORE_1_8);
 			// rabbit -> chicken
 			registerRemapEntry(101, 93, ProtocolVersionsHelper.BEFORE_1_8);
 			// horse -> cow
 			registerRemapEntry(100, 92, ProtocolVersionsHelper.BEFORE_1_6);
+			// command minecart
+			registerRemapEntry(40, 42, ProtocolVersionsHelper.BEFORE_1_6);
+			// spawner minecart
+			registerRemapEntry(47, 44, ProtocolVersionsHelper.BEFORE_1_6);
 		}
 		@Override
 		protected RemappingTable createTable() {

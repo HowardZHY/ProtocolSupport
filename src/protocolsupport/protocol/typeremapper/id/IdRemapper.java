@@ -113,6 +113,9 @@ public class IdRemapper {
 	public static final RemappingRegistry ITEM = new RemappingRegistry() {
 		{
 			copy(BLOCK);
+			// carrot on a stick
+			registerRemapEntry(398, 346, ProtocolVersionsHelper.IS_15W14A);
+
 			// all doors -> door
 			registerRemapEntry(427, 324, ProtocolVersionsHelper.BEFORE_1_8);
 			registerRemapEntry(428, 324, ProtocolVersionsHelper.BEFORE_1_8);
@@ -175,7 +178,7 @@ public class IdRemapper {
 			// rabbit -> chicken
 			registerRemapEntry(101, 93, ProtocolVersionsHelper.BEFORE_1_8);
 			// horse -> cow
-			registerRemapEntry(100, 92, ProtocolVersionsHelper.BEFORE_1_6);
+			registerRemapEntry(100, 92, ProtocolVersionsHelper.BEFORE_1_6_EXCLUDE_2_0);
 			// command minecart
 			registerRemapEntry(40, 42, ProtocolVersionsHelper.BEFORE_1_6);
 			// spawner minecart

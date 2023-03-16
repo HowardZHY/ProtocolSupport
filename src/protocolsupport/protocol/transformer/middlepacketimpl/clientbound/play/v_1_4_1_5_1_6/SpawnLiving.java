@@ -18,6 +18,9 @@ public class SpawnLiving extends MiddleSpawnLiving<RecyclableCollection<PacketDa
 		if (type == 30) { //skip armor stand
 			return RecyclableEmptyList.get();
 		}
+		if ((version == ProtocolVersion.MINECRAFT_2_0_Purple | version == ProtocolVersion.MINECRAFT_2_0_Red | version == ProtocolVersion.MINECRAFT_2_0_Blue) && type == 100){
+			return RecyclableEmptyList.get(); //skip horse fix crash - 2.0
+		}
 		PacketData serializer = PacketData.create(ClientBoundPacket.PLAY_SPAWN_LIVING_ID, version);
 		serializer.writeInt(entityId);
 		serializer.writeByte(IdRemapper.ENTITY.getTable(version).getRemap(type));

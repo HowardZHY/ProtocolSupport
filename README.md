@@ -1,14 +1,10 @@
-ProtocolSupport 1.8.8 with AF support
+This is an Unoffical fork of ProtocolSupport 1.8.8 with Mappings fixes and old April Fools versions support
 ===============
 
-[![Build Status](http://build.true-games.org/buildStatus/icon?job=ProtocolSupport)](http://build.true-games.org/job/ProtocolSupport/)
-[![Join the chat at https://gitter.im/ProtocolSupport/ProtocolSupport](https://badges.gitter.im/ProtocolSupport/ProtocolSupport.svg)](https://gitter.im/ProtocolSupport/ProtocolSupport?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-<span class="badge-patreon"><a href="http://patreon.com/shevchik" title="Donate to this project using Patreon"><img src="https://img.shields.io/badge/patreon-donate-yellow.svg" alt="Patreon donate button" /></a></span>
-<span class="badge-paypal"><a href="https://www.paypal.com/cgi-bin/webscr?return=&business=true-games.org%40yandex.ru&bn=PP-DonationsBF%3Abtn_donateCC_LG.gif%3ANonHosted&cmd=_donations&rm=1&no_shipping=1&currency_code=USD" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span>
-
-Support 1.7.X, 1.6.X, 1.5.X, 1.4.7 and 15w14a, 2.0 April Fools versions on TacoSpigot & Forks
+This fork of ProtocolSupport 1.8.8 supports all 1.7.10-1.4.6 and 15w14a, 2.0 April Fools versions, with some mappings fixes to fix 1.4.6-1.6.4 crashes. Please use **TacoSpigot & Forks** instead of paper to avoid problem with 1.7.X clients.
 
 Known issues:
+* [15w14a] Carrot on a stick crashes client
 * [1.7/1.7.1] Random kick
 * [1.6 and earlier] Stats are not sent - won't be fixed
 * [1.5 and earlier] Can't control vehicle - won't be fixed, probably impossible to do this properly
@@ -16,9 +12,7 @@ Known issues:
 
 ================
 
-Spigot: http://www.spigotmc.org/resources/protocolsupport.7201/
-
-Jenkins: http://build.true-games.org/job/ProtocolSupport/
+If you want improve more, Please contact on Github https://github.com/HowardZHY/ProtocolSupport
 
 ================
 

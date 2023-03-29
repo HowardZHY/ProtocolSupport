@@ -12,6 +12,7 @@ public enum ProtocolVersion {
 	MINECRAFT_1_6_3(77, 6, "1.6.3"),
 	MINECRAFT_1_6_2(74, 5, "1.6.2"),
 	MINECRAFT_1_6_1(73, 4, "1.6.1"),
+	MINECRAFT_1_6(72, 4, "1.6"),
 	MINECRAFT_1_5_2(61, 3, "1.5.2"),
 	MINECRAFT_2_0_Purple(92, 2, "2.0Purple"),
 	MINECRAFT_2_0_Red(91, 2, "2.0Red"),
@@ -83,7 +84,7 @@ public enum ProtocolVersion {
 		}
 	}
 
-	@Deprecated
+	// @Deprecated
 	public static ProtocolVersion fromId(int id) {
 		switch (id) {
 			case 47: {
@@ -112,6 +113,9 @@ public enum ProtocolVersion {
 			}
 			case 73: {
 				return MINECRAFT_1_6_1;
+			}
+			case 72: {
+				return MINECRAFT_1_6;
 			}
 			case 61: {
 				return MINECRAFT_1_5_2;

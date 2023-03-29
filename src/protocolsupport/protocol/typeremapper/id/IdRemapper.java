@@ -192,7 +192,7 @@ public class IdRemapper {
 
 	public static final RemappingRegistry MAPCOLOR = new RemappingRegistry() {
 		{
-			//see http://minecraft.gamepedia.com/Map_item_format (i don't event know a names for half of those colors)
+			//see http://minecraft.gamepedia.com/Map_item_format (i don't even know a names for half of those colors)
 			registerRemapEntry(14, 8, ProtocolVersionsHelper.BEFORE_1_7);
 			registerRemapEntry(15, 10, ProtocolVersionsHelper.BEFORE_1_7);
 			registerRemapEntry(16, 5, ProtocolVersionsHelper.BEFORE_1_7);

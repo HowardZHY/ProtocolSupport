@@ -15,6 +15,9 @@ public class BlockOpenSignEditor extends MiddleBlockOpenSignEditor<RecyclableCol
 		if (version == ProtocolVersion.MINECRAFT_1_6_1) {
 			return RecyclableEmptyList.get();
 		}
+		if (version == ProtocolVersion.MINECRAFT_1_6) {
+			return RecyclableEmptyList.get();
+		}
 		PacketData serializer = PacketData.create(ClientBoundPacket.PLAY_SIGN_EDITOR_ID, version);
 		serializer.writeByte(0);
 		serializer.writeInt(position.getX());

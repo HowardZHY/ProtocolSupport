@@ -21,19 +21,20 @@ public class ProtocolUtils {
 			case 73: {
 				return ProtocolVersion.MINECRAFT_1_6_1;
 			}
+			case 72: {
+				return ProtocolVersion.MINECRAFT_1_6;
+			}
 			default: {
 				return ProtocolVersion.MINECRAFT_1_6_4;
 			}
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	protected static ProtocolVersion readOldHandshake(ByteBuf data) {
 		ProtocolVersion version = ProtocolVersion.fromId(data.readUnsignedByte());
 		return version != ProtocolVersion.UNKNOWN ? version : ProtocolVersion.MINECRAFT_LEGACY;
 	}
 
-	@SuppressWarnings("deprecation")
 	protected static ProtocolVersion readNettyHandshake(ByteBuf data) {
 		int packetId = ChannelUtils.readVarInt(data);
 		if (packetId == 0x00) {

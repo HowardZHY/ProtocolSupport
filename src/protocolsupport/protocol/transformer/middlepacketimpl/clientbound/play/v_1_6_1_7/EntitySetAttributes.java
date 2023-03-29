@@ -17,7 +17,7 @@ public class EntitySetAttributes extends MiddleEntitySetAttributes<RecyclableCol
 		for (Attribute attribute : attributes) {
 			serializer.writeString(attribute.key);
 			serializer.writeDouble(attribute.value);
-			if (version != ProtocolVersion.MINECRAFT_1_6_1 || version != ProtocolVersion.MINECRAFT_1_6) {
+			if (version.isAfter(ProtocolVersion.MINECRAFT_1_6_1)) {
 				serializer.writeShort(attribute.modifiers.length);
 				for (Modifier modifier : attribute.modifiers) {
 					serializer.writeUUID(modifier.uuid);

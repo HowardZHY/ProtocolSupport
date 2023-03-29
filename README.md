@@ -6,7 +6,7 @@ ProtocolSupport 1.8.8 with AF support
 <span class="badge-patreon"><a href="http://patreon.com/shevchik" title="Donate to this project using Patreon"><img src="https://img.shields.io/badge/patreon-donate-yellow.svg" alt="Patreon donate button" /></a></span>
 <span class="badge-paypal"><a href="https://www.paypal.com/cgi-bin/webscr?return=&business=true-games.org%40yandex.ru&bn=PP-DonationsBF%3Abtn_donateCC_LG.gif%3ANonHosted&cmd=_donations&rm=1&no_shipping=1&currency_code=USD" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span>
 
-Support 1.7.X, 1.6.X, 1.5.X, 1.4.7 and 15w14a, 2.0 April Fools versions on Paper
+Support 1.7.X, 1.6.X, 1.5.X, 1.4.7 and 15w14a, 2.0 April Fools versions on TacoSpigot & Forks
 
 Known issues:
 * [1.7/1.7.1] Random kick

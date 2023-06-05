@@ -18,6 +18,7 @@ public class Utils {
 		return object;
 	}
 
+	@Deprecated
 	public static void setStaticFinalField(Field field, Object newValue) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		setAccessible(Field.class.getDeclaredField("modifiers")).setInt(field, field.getModifiers() & ~Modifier.FINAL);
 		setAccessible(Field.class.getDeclaredField("root")).set(field, null);

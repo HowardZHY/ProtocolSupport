@@ -73,13 +73,14 @@ public class ServerInjector {
 		((Map<Block, Item>) Utils.setAccessible(Item.class.getDeclaredField("a")).get(null)).put(itemblock.d(), itemblock);
 	}
 
-	private static void fixBlocksRefs() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+	public static void fixBlocksRefs() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		for (Field field : Blocks.class.getDeclaredFields()) {
 			field.setAccessible(true);
 			if (Block.class.isAssignableFrom(field.getType())) {
 				Block block = (Block) field.get(null);
 				Block newblock = Block.getById(Block.getId(block));
-				if (block != newblock) {
+				// Stop Java9+ Crash Test
+				if (block != newblock && (Float.parseFloat(System.getProperty("java.class.version")) == 52.0)) {
 					Utils.setStaticFinalField(field, newblock);
 				}
 			}

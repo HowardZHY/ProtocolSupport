@@ -45,7 +45,7 @@ public class ProtocolVersionsHelper {
 
 
 
-	public static final ProtocolVersion[] concat(ProtocolVersion[] versions, ProtocolVersion... moreVersions) {
+	public static ProtocolVersion[] concat(ProtocolVersion[] versions, ProtocolVersion... moreVersions) {
 		ArrayList<ProtocolVersion> all = new ArrayList<ProtocolVersion>();
 		all.addAll(Arrays.asList(versions));
 		all.addAll(Arrays.asList(moreVersions));

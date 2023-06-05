@@ -23,11 +23,11 @@ import protocolsupport.protocol.transformer.middlepacket.ClientBoundMiddlePacket
 import protocolsupport.protocol.transformer.middlepacketimpl.PacketData;
 import protocolsupport.protocol.transformer.middlepacketimpl.clientbound.login.v_1_4_1_5_1_6.LoginDisconnect;
 import protocolsupport.protocol.transformer.middlepacketimpl.clientbound.login.v_1_4_1_5_1_6_1_7.EncryptionRequest;
-import protocolsupport.protocol.transformer.middlepacketimpl.clientbound.play.v1_5_1_6_1_7.InventoryOpen;
-import protocolsupport.protocol.transformer.middlepacketimpl.clientbound.play.v1_5_1_6_1_7.ScoreboardObjective;
-import protocolsupport.protocol.transformer.middlepacketimpl.clientbound.play.v1_5_1_6_1_7.ScoreboardScore;
-import protocolsupport.protocol.transformer.middlepacketimpl.clientbound.play.v1_5_1_6_1_7.ScoreboardTeam;
-import protocolsupport.protocol.transformer.middlepacketimpl.clientbound.play.v1_5_1_6_1_7.WorldParticle;
+import protocolsupport.protocol.transformer.middlepacketimpl.clientbound.play.v_1_5_1_6_1_7.InventoryOpen;
+import protocolsupport.protocol.transformer.middlepacketimpl.clientbound.play.v_1_5_1_6_1_7.ScoreboardObjective;
+import protocolsupport.protocol.transformer.middlepacketimpl.clientbound.play.v_1_5_1_6_1_7.ScoreboardScore;
+import protocolsupport.protocol.transformer.middlepacketimpl.clientbound.play.v_1_5_1_6_1_7.ScoreboardTeam;
+import protocolsupport.protocol.transformer.middlepacketimpl.clientbound.play.v_1_5_1_6_1_7.WorldParticle;
 import protocolsupport.protocol.transformer.middlepacketimpl.clientbound.play.v_1_4_1_5.Chat;
 import protocolsupport.protocol.transformer.middlepacketimpl.clientbound.play.v_1_4_1_5.EntityAttach;
 import protocolsupport.protocol.transformer.middlepacketimpl.clientbound.play.v_1_4_1_5.PlayerAbilities;

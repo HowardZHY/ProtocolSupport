@@ -5,8 +5,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang3.JavaVersion;
-import org.apache.commons.lang3.SystemUtils;
 import org.bukkit.Bukkit;
 
 import net.minecraft.server.v1_8_R3.Block;
@@ -82,7 +80,7 @@ public class ServerInjector {
 				Block block = (Block) field.get(null);
 				Block newblock = Block.getById(Block.getId(block));
 				// Stop Java9+ Crash Test
-				if (block != newblock && Float.parseFloat(System.getProperty("java.class.version")) == 52.0) {
+				if (block != newblock && (Float.parseFloat(System.getProperty("java.class.version")) == 52.0)) {
 					Utils.setStaticFinalField(field, newblock);
 				}
 			}

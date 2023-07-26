@@ -6,8 +6,9 @@ This fork of ProtocolSupport 1.8.8 supports all 1.7.10-1.4.6 and 15w14a, 2.0 Apr
 Known issues:
 * [15w14a] Carrot on a stick crashes client
 * [1.7/1.7.1] Random kick
-* [1.6 and earlier] Stats are not sent - won't be fixed
-* [1.5 and earlier] Can't control vehicle - won't be fixed, probably impossible to do this properly
+* [1.6.4 and earlier] Stats are not sent - won't be fixed
+* [1.5.2 and earlier] Can't control vehicle - won't be fixed, probably impossible to do this properly
+* [1.4.7 and earlier] Online mode likely unable to connect
 * [1.4.5 and earlier] Aren't supported yet
 
 ================

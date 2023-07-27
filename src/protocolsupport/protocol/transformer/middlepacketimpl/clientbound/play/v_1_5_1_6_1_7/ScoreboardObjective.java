@@ -1,4 +1,4 @@
-package protocolsupport.protocol.transformer.middlepacketimpl.clientbound.play.v1_5_1_6_1_7;
+package protocolsupport.protocol.transformer.middlepacketimpl.clientbound.play.v_1_5_1_6_1_7;
 
 import protocolsupport.api.ProtocolVersion;
 import protocolsupport.protocol.ClientBoundPacket;

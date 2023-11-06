@@ -36,29 +36,38 @@ public class InitialPacketDecoder extends SimpleChannelInboundHandler<ByteBuf> {
 
 	private static final EnumMap<ProtocolVersion, IPipeLineBuilder> pipelineBuilders = new EnumMap<ProtocolVersion, IPipeLineBuilder>(ProtocolVersion.class);
 	static {
+		// 1.8
 		IPipeLineBuilder builder = new protocolsupport.protocol.transformer.v_1_8.PipeLineBuilder();
 		pipelineBuilders.put(ProtocolVersion.MINECRAFT_FUTURE, builder);
 		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_8, builder);
 		pipelineBuilders.put(ProtocolVersion.MINECRAFT_15w14a, builder);
+		// 1.7
 		IPipeLineBuilder builder17 = new protocolsupport.protocol.transformer.v_1_7.PipeLineBuilder();
 		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_7_10, builder17);
 		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_7_5, builder17);
 		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_7_1, builder17);
+		// 1.6
 		IPipeLineBuilder builder16 = new protocolsupport.protocol.transformer.v_1_6.PipeLineBuilder();
 		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_6_4, builder16);
 		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_6_3, builder16);
 		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_6_2, builder16);
 		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_6_1, builder16);
 		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_6, builder16);
+		// 1.5
 		IPipeLineBuilder builder15 = new protocolsupport.protocol.transformer.v_1_5.PipeLineBuilder();
 		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_5_2, builder15);
 		pipelineBuilders.put(ProtocolVersion.MINECRAFT_2_0_Purple, builder15);
 		pipelineBuilders.put(ProtocolVersion.MINECRAFT_2_0_Red, builder15);
 		pipelineBuilders.put(ProtocolVersion.MINECRAFT_2_0_Blue, builder15);
 		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_5_1, builder15);
-		IPipeLineBuilder builder14 = new protocolsupport.protocol.transformer.v_1_4.PipeLineBuilder();
-		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_4_7, builder14);
-		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_4_5, builder14);
+		// 1.4
+		IPipeLineBuilder builder146 = new protocolsupport.protocol.transformer.v_1_4_6.PipeLineBuilder();
+		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_4_7, builder146);
+		IPipeLineBuilder builder144 = new protocolsupport.protocol.transformer.v_1_4_4.PipeLineBuilder();
+		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_4_5, builder144);
+		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_4_3, builder144);
+		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_4_2, builder144);
+		// Legacy
 		pipelineBuilders.put(ProtocolVersion.MINECRAFT_LEGACY, new protocolsupport.protocol.transformer.v_legacy.PipeLineBuilder());
 	}
 

@@ -31,14 +31,14 @@ public class ProtocolUtils {
 	}
 
 	protected static ProtocolVersion readOldHandshake(ByteBuf data) {
-		ProtocolVersion version = ProtocolVersion.fromId(data.readUnsignedByte());
+		ProtocolVersion version = ProtocolVersion.fromId(0, data.readUnsignedByte());
 		return version != ProtocolVersion.UNKNOWN ? version : ProtocolVersion.MINECRAFT_LEGACY;
 	}
 
 	protected static ProtocolVersion readNettyHandshake(ByteBuf data) {
 		int packetId = ChannelUtils.readVarInt(data);
 		if (packetId == 0x00) {
-			ProtocolVersion version = ProtocolVersion.fromId(ChannelUtils.readVarInt(data));
+			ProtocolVersion version = ProtocolVersion.fromId(1, ChannelUtils.readVarInt(data));
 			return version != ProtocolVersion.UNKNOWN ? version : ProtocolVersion.MINECRAFT_FUTURE;
 		} else {
 			throw new DecoderException(packetId + "is not a valid packet id");

@@ -11,3 +11,4 @@ out/
 *.prefs
 /.apt_generated/
 *.factorypath
+.idea/uiDesigner.xml

@@ -7,12 +7,16 @@ import protocolsupport.api.ProtocolVersion;
 
 public class ProtocolVersionsHelper {
 
+	public static final ProtocolVersion[] BEFORE_1_4_6 = new ProtocolVersion[] {
+			ProtocolVersion.MINECRAFT_1_4_2, ProtocolVersion.MINECRAFT_1_4_3, ProtocolVersion.MINECRAFT_1_4_5
+	};
+
 	public static final ProtocolVersion[] BEFORE_1_5 = new ProtocolVersion[] {
-		ProtocolVersion.MINECRAFT_1_4_5, ProtocolVersion.MINECRAFT_1_4_7
+		ProtocolVersion.MINECRAFT_1_4_2, ProtocolVersion.MINECRAFT_1_4_3, ProtocolVersion.MINECRAFT_1_4_5, ProtocolVersion.MINECRAFT_1_4_7
 	};
 
 	public static final ProtocolVersion[] IS_2_0 = new ProtocolVersion[] {
-			ProtocolVersion.MINECRAFT_2_0_Blue, ProtocolVersion.MINECRAFT_2_0_Red, ProtocolVersion.MINECRAFT_2_0_Purple
+		ProtocolVersion.MINECRAFT_2_0_Blue, ProtocolVersion.MINECRAFT_2_0_Red, ProtocolVersion.MINECRAFT_2_0_Purple
 	};
 
 	public static final ProtocolVersion[] BEFORE_1_6_EXCLUDE_2_0 = concat(
@@ -43,8 +47,7 @@ public class ProtocolVersionsHelper {
 
 	public static final ProtocolVersion[] ALL = BEFORE_1_9;
 
-
-
+	@SuppressWarnings("all")
 	public static ProtocolVersion[] concat(ProtocolVersion[] versions, ProtocolVersion... moreVersions) {
 		ArrayList<ProtocolVersion> all = new ArrayList<ProtocolVersion>();
 		all.addAll(Arrays.asList(versions));

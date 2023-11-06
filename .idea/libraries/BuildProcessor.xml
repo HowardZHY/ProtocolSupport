@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="BuildProcessor">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/buildprocessor/BuildProcessor.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

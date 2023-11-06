@@ -29,7 +29,12 @@ public class SpawnLiving extends MiddleSpawnLiving<RecyclableCollection<PacketDa
 		serializer.writeInt(z);
 		serializer.writeByte(yaw);
 		serializer.writeByte(pitch);
-		serializer.writeByte(headPitch);
+		if (version.isAfterOrEq(ProtocolVersion.MINECRAFT_1_4_7)) {
+			serializer.writeByte(headPitch);
+		}
+		if (version.isBeforeOrEq(ProtocolVersion.MINECRAFT_1_4_5)) {
+			serializer.writeInt(1);
+		}
 		serializer.writeShort(motX);
 		serializer.writeShort(motY);
 		serializer.writeShort(motZ);

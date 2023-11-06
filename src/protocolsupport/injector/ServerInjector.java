@@ -38,13 +38,13 @@ public class ServerInjector {
 		Bukkit.resetRecipes();
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("all")
 	private static void registerTileEntity(Class<? extends TileEntity> entityClass, String name) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		((Map<String, Class<? extends TileEntity>>) Utils.setAccessible(TileEntity.class.getDeclaredField("f")).get(null)).put(name, entityClass);
 		((Map<Class<? extends TileEntity>, String>) Utils.setAccessible(TileEntity.class.getDeclaredField("g")).get(null)).put(entityClass, name);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("all")
 	private static void registerBlock(int id, String name, Block block) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		MinecraftKey stringkey = new MinecraftKey(name);
 		ItemBlock itemblock = new ItemBlock(block);
@@ -59,7 +59,7 @@ public class ServerInjector {
 		((Map<Block, Item>)Utils.setAccessible(Item.class.getDeclaredField("a")).get(null)).put(block, itemblock);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("all")
 	private static void registerBlock(int id, String name, ItemBlock itemblock) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		MinecraftKey stringkey = new MinecraftKey(name);
 		Block.REGISTRY.a(id, stringkey, itemblock.d());

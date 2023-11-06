@@ -54,8 +54,10 @@ public class SpawnObject extends MiddleSpawnObject<RecyclableCollection<PacketDa
 		serializer.writeInt(x);
 		serializer.writeInt(y);
 		serializer.writeInt(z);
-		serializer.writeByte(pitch);
-		serializer.writeByte(yaw);
+		if (version.isAfterOrEq(ProtocolVersion.MINECRAFT_1_4_7)) {
+			serializer.writeByte(pitch);
+			serializer.writeByte(yaw);
+		}
 		serializer.writeInt(objectdata);
 		if (objectdata > 0) {
 			serializer.writeShort(motX);

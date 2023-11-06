@@ -33,7 +33,7 @@ public class PacketData extends PacketDataSerializer {
 		RECYCLER.recycle(this, handle);
 	}
 
-	private int packetId;
+	public int packetId;
 
 	public int getPacketId() {
 		return packetId;

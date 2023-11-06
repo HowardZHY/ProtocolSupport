@@ -7,8 +7,16 @@ import protocolsupport.api.ProtocolVersion;
 
 public class ProtocolVersionsHelper {
 
+	public static final ProtocolVersion[] BEFORE_1_4 = new ProtocolVersion[] {
+		ProtocolVersion.MINECRAFT_1_3_2
+	};
+
+	public static final ProtocolVersion[] BEFORE_1_4_3 = new ProtocolVersion[] {
+		ProtocolVersion.MINECRAFT_1_4_2, ProtocolVersion.MINECRAFT_1_3_2
+	};
+
 	public static final ProtocolVersion[] BEFORE_1_4_6 = new ProtocolVersion[] {
-			ProtocolVersion.MINECRAFT_1_4_2, ProtocolVersion.MINECRAFT_1_4_3, ProtocolVersion.MINECRAFT_1_4_5
+		ProtocolVersion.MINECRAFT_1_4_2, ProtocolVersion.MINECRAFT_1_4_3, ProtocolVersion.MINECRAFT_1_4_5
 	};
 
 	public static final ProtocolVersion[] BEFORE_1_5 = new ProtocolVersion[] {

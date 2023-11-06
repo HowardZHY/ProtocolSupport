@@ -6,15 +6,37 @@ import protocolsupport.protocol.typeremapper.id.RemappingTable;
 
 public class ChunkTransformer {
 
-	public static int calcDataSize(final int count, final boolean light, final boolean sendBiomes) {
+	public static int calcDataSize(final int count, boolean light, final boolean sendBiomes) {
 		int idlength = count * 2 * 16 * 16 * 16;
 		int blocklightlength = (count * 16 * 16 * 16) / 2;
-		int skylightlength = light ? ((count * 16 * 16 * 16) / 2) : 0;
+		int skylightlength; //= light ? ((count * 16 * 16 * 16) / 2) : 0;
+		if (light) {
+			skylightlength = ((count * 16 * 16 * 16) / 2);
+		} else {
+			skylightlength = 0;
+		}
+		int biomeslength = sendBiomes ? 256 : 0;
+		return idlength + blocklightlength + skylightlength + biomeslength;
+	}
+
+	public static int calcDataSize145(final int count, boolean light, final boolean sendBiomes) {
+		int idlength = count * 2 * 16 * 16 * 16;
+		int blocklightlength = (count * 16 * 16 * 16) / 2;
+		int skylightlength; //= light ? ((count * 16 * 16 * 16) / 2) : 0;
+		System.out.println(count);
+		if (light) {
+			skylightlength = ((count * 16 * 16 * 16) / 2);
+		} else {
+			skylightlength = 0;
+		}
 		int biomeslength = sendBiomes ? 256 : 0;
 		return idlength + blocklightlength + skylightlength + biomeslength;
 	}
 
 	public static byte[] toPre18Data(byte[] data18, int bitmap, ProtocolVersion version) {
+		if (version.isBeforeOrEq(ProtocolVersion.MINECRAFT_1_4_5)) {
+			//
+		}
 		int count = Integer.bitCount(bitmap);
 		byte[] newdata = new byte[(count * (4096 + 2048)) + (data18.length - (count * 8192))];
 		int tIndex = 0;

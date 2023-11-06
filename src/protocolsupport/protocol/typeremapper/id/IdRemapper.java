@@ -145,7 +145,7 @@ public class IdRemapper {
 			registerRemapEntry(430, 324, ProtocolVersionsHelper.BEFORE_1_8);
 			registerRemapEntry(431, 324, ProtocolVersionsHelper.BEFORE_1_8);
 			// 1.6
-			// cmd block mincart
+			// cmd block minecart
 			registerRemapEntry(422, 328, ProtocolVersionsHelper.BEFORE_1_7);
 			// 1.5
 			// horst armor 2 saddle
@@ -165,6 +165,14 @@ public class IdRemapper {
 			// minecarts -> default minecart
 			registerRemapEntry(407, 328, ProtocolVersionsHelper.BEFORE_1_5);
 			registerRemapEntry(408, 328, ProtocolVersionsHelper.BEFORE_1_5);
+			// enchanted books -> normal book
+			registerRemapEntry(403, 340, ProtocolVersionsHelper.BEFORE_1_4_6);
+			// firework star -> gunpowder
+			registerRemapEntry(402, 289, ProtocolVersionsHelper.BEFORE_1_4_6);
+			// firework rocket -> flint
+			registerRemapEntry(401, 318, ProtocolVersionsHelper.BEFORE_1_4_6);
+			// music disk wait
+			registerRemapEntry(2267, 2256, ProtocolVersionsHelper.BEFORE_1_4_3);
 		}
 		@Override
 		protected RemappingTable createTable() {

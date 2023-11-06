@@ -160,7 +160,7 @@ public class ClientBoundPacket {
 	public static final int PLAY_RESOURCE_PACK_ID = getId(PacketPlayOutResourcePackSend.class);
 
 	@SuppressWarnings("unchecked")
-	private static final int getId(Class<?> packetClass) {
+	private static int getId(Class<?> packetClass) {
 		Map<Class<? extends Packet<?>>, EnumProtocol> protocolMap = null;
 		try {
 			protocolMap = (Map<Class<? extends Packet<?>>, EnumProtocol>) Utils.setAccessible(EnumProtocol.class.getDeclaredField("h")).get(null);

@@ -1,4 +1,4 @@
-package protocolsupport.protocol.transformer.middlepacketimpl.clientbound.play.v_1_4_1_5_1_6;
+package protocolsupport.protocol.transformer.middlepacketimpl.clientbound.play.v_1_4_6_1_5_1_6;
 
 import protocolsupport.api.ProtocolVersion;
 import protocolsupport.protocol.ClientBoundPacket;
@@ -18,8 +18,13 @@ public class SpawnLiving extends MiddleSpawnLiving<RecyclableCollection<PacketDa
 		if (type == 30) { //skip armor stand
 			return RecyclableEmptyList.get();
 		}
-		if ((version == ProtocolVersion.MINECRAFT_2_0_Purple | version == ProtocolVersion.MINECRAFT_2_0_Red | version == ProtocolVersion.MINECRAFT_2_0_Blue) && type == 100){
+		if ((version.isAprilFools2_0(version)) && type == 100){
 			return RecyclableEmptyList.get(); //skip horse fix crash - 2.0
+		}
+		if (version.isBeforeOrEq(ProtocolVersion.MINECRAFT_1_4_5)) {
+			if (type == 22) {
+				return RecyclableEmptyList.get(); //skip firework rocket - 1.4.5
+			}
 		}
 		PacketData serializer = PacketData.create(ClientBoundPacket.PLAY_SPAWN_LIVING_ID, version);
 		serializer.writeInt(entityId);
@@ -29,12 +34,7 @@ public class SpawnLiving extends MiddleSpawnLiving<RecyclableCollection<PacketDa
 		serializer.writeInt(z);
 		serializer.writeByte(yaw);
 		serializer.writeByte(pitch);
-		if (version.isAfterOrEq(ProtocolVersion.MINECRAFT_1_4_7)) {
-			serializer.writeByte(headPitch);
-		}
-		if (version.isBeforeOrEq(ProtocolVersion.MINECRAFT_1_4_5)) {
-			serializer.writeInt(1);
-		}
+		serializer.writeByte(headPitch);
 		serializer.writeShort(motX);
 		serializer.writeShort(motY);
 		serializer.writeShort(motZ);

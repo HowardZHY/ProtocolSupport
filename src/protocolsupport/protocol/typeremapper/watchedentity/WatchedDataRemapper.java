@@ -12,6 +12,7 @@ import protocolsupport.utils.DataWatcherObject.ValueType;
 public class WatchedDataRemapper {
 
 	private static final TIntObjectMap<DataWatcherObject> FAKE_EMPTY_MAP = new TIntObjectHashMap<DataWatcherObject>();
+
 	static {
 		FAKE_EMPTY_MAP.put(31, new DataWatcherObject(ValueType.BYTE, (byte) 0));
 	}

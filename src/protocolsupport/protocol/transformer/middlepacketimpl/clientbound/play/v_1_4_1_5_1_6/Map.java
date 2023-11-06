@@ -48,7 +48,12 @@ public class Map extends MiddleMap<RecyclableCollection<PacketData>> {
 				PacketData mapdata = PacketData.create(ClientBoundPacket.PLAY_MAP_ID, version);
 				mapdata.writeShort(mapId);
 				mapdata.writeShort(itemData);
-				mapdata.writeShort(3 + entry.getColors().length);
+				if (version.isBeforeOrEq(ProtocolVersion.MINECRAFT_1_4_3)){
+					mapdata.writeByte(3 + entry.getColors().length);
+				}
+				if (version.isAfterOrEq(ProtocolVersion.MINECRAFT_1_4_5)){
+					mapdata.writeShort(3 + entry.getColors().length);
+				}
 				mapdata.writeByte(0);
 				mapdata.writeByte(entry.getX());
 				mapdata.writeByte(entry.getY());

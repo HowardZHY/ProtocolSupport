@@ -2,28 +2,36 @@ package protocolsupport.api;
 
 public enum ProtocolVersion {
 
-	MINECRAFT_FUTURE(1, -1, 12),
+	// 1.8+
+	MINECRAFT_FUTURE(1, -1, 15),
 
-	MINECRAFT_1_8(1, 47, 11, "1.8.X"),
-	MINECRAFT_15w14a(1, 48, 10, "15w14a"),
-	MINECRAFT_1_7_10(1, 5, 9, "1.7.10"),
-	MINECRAFT_1_7_5(1, 4, 8, "1.7.2"),
-	MINECRAFT_1_7_1(1, 3, 8, "1.7.1"),
-	MINECRAFT_1_6_4(0, 78, 7, "1.6.4"),
-	MINECRAFT_1_6_3(0, 77, 7, "1.6.3"),
-	MINECRAFT_1_6_2(0, 74, 6, "1.6.2"),
-	MINECRAFT_1_6_1(0, 73, 5, "1.6.1"),
-	MINECRAFT_1_6(0, 72, 5, "1.6"),
-	MINECRAFT_1_5_2(0, 61, 4, "1.5.2"),
-	MINECRAFT_2_0_Purple(0, 92, 3, "2.0Purple"),
-	MINECRAFT_2_0_Red(0, 91, 3, "2.0Red"),
-	MINECRAFT_2_0_Blue(0, 90, 3, "2.0Blue"),
-	MINECRAFT_1_5_1(0, 60, 3, "1.5.1"),
-	MINECRAFT_1_4_7(0, 51, 2, "1.4.7"),
-	MINECRAFT_1_4_5(0, 49, 1, "1.4.5"),
-	MINECRAFT_1_4_3(0, 48, 1, "1.4.3"),
-	MINECRAFT_1_4_2(0, 47, 1, "1.4.2"),
+	MINECRAFT_1_8(1, 47, 14, "1.8.X"),
+	MINECRAFT_15w14a(1, 48, 14, "15w14a"),
+	// 1.7
+	MINECRAFT_1_7_10(1, 5, 13, "1.7.6-1.7.10"),
+	MINECRAFT_1_7_5(1, 4, 12, "1.7.2-1.7.5"),
+	MINECRAFT_1_7_1(1, 3, 11, "1.7-1.7.1"),
+	// 1.6
+	MINECRAFT_1_6_4(0, 78, 10, "1.6.4"),
+	MINECRAFT_1_6_3(0, 77, 9, "1.6.3"),
+	MINECRAFT_1_6_2(0, 74, 8, "1.6.2"),
+	MINECRAFT_1_6_1(0, 73, 7, "1.6.1"),
+	MINECRAFT_1_6(0, 72, 7, "1.6"),
+	// 1.5
+	MINECRAFT_1_5_2(0, 61, 6, "1.5.2"),
+	MINECRAFT_2_0_Purple(0, 92, 5, "2.0Purple"),
+	MINECRAFT_2_0_Red(0, 91, 5, "2.0Red"),
+	MINECRAFT_2_0_Blue(0, 90, 5, "2.0Blue"),
+	MINECRAFT_1_5_1(0, 60, 5, "1.5-1.5.1"),
+	// 1.4
+	MINECRAFT_1_4_7(0, 51, 4, "1.4.6-1.4.7"),
+	MINECRAFT_1_4_5(0, 49, 3, "1.4.4-1.4.5"),
+	MINECRAFT_1_4_3(0, 48, 2, "1.4.3"),
+	MINECRAFT_1_4_2(0, 47, 2, "1.4-1.4.2"),
+	// 1.3
+	MINECRAFT_1_3_2(0, 39, 1, "1.3.X"),
 	MINECRAFT_LEGACY(0, -1, 0),
+
 	UNKNOWN(-1, -1);
 
 	private final int type;
@@ -60,6 +68,10 @@ public enum ProtocolVersion {
 
 	public boolean isSupported() {
 		return name != null;
+	}
+
+	public boolean isAprilFools2_0(ProtocolVersion version) {
+		return version == MINECRAFT_2_0_Blue || version == MINECRAFT_2_0_Red || version == MINECRAFT_2_0_Purple;
 	}
 
 	public boolean isAfter(ProtocolVersion another) {
@@ -158,6 +170,9 @@ public enum ProtocolVersion {
 				case 47: {
 					return MINECRAFT_1_4_2;
 				}
+				case 39: {
+					return MINECRAFT_1_3_2;
+				}
 			}
 		}
 		return UNKNOWN;
@@ -186,7 +201,7 @@ public enum ProtocolVersion {
 	}
 
 	public static ProtocolVersion getOldest() {
-		return ProtocolVersion.MINECRAFT_1_4_2;
+		return ProtocolVersion.MINECRAFT_1_3_2;
 	}
 
 }

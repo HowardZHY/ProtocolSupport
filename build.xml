@@ -2,7 +2,7 @@
 
 	<path id="libs">
 		<filelist>
-			<file name="${basedir}/libs/spigot.jar" />
+			<file name="${basedir}/libs/PaperSpigot.jar" />
 			<file name="${basedir}/buildprocessor/BuildProcessor.jar" />
 		</filelist>
 	</path>

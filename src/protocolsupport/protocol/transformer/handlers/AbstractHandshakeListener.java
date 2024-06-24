@@ -20,7 +20,9 @@ import net.minecraft.server.v1_8_R3.MinecraftServer;
 import net.minecraft.server.v1_8_R3.NetworkManager;
 import net.minecraft.server.v1_8_R3.PacketHandshakingInSetProtocol;
 import net.minecraft.server.v1_8_R3.PacketLoginOutDisconnect;
+import protocolsupport.api.Connection;
 import protocolsupport.api.ProtocolVersion;
+import protocolsupport.protocol.ConnectionImpl;
 import protocolsupport.protocol.storage.ProtocolStorage;
 import protocolsupport.protocol.storage.ThrottleTracker;
 
@@ -54,7 +56,8 @@ public abstract class AbstractHandshakeListener extends HandshakeListener {
 				} catch (Throwable t) {
 					LogManager.getLogger().debug("Failed to check connection throttle", t);
 				}
-				if (packethandshakinginsetprotocol.b() != ProtocolVersion.getLatest().getId() && packethandshakinginsetprotocol.b() != 48) {
+				if (packethandshakinginsetprotocol.b() < ProtocolVersion.getLatest().getId() && packethandshakinginsetprotocol.b() != 48) {
+					//TODO Use Via API?
 					final ChatComponentText chatcomponenttext = new ChatComponentText("Unsupported protocol version "+packethandshakinginsetprotocol.b()+" Please use 1.8.X ");
 					this.networkManager.handle(new PacketLoginOutDisconnect(chatcomponenttext));
 					this.networkManager.close(chatcomponenttext);
@@ -71,11 +74,10 @@ public abstract class AbstractHandshakeListener extends HandshakeListener {
 					}
 					packethandshakinginsetprotocol.hostname = split[0];
 					SocketAddress oldaddress = networkManager.getSocketAddress();
-					ProtocolVersion version = ProtocolStorage.getProtocolVersion(oldaddress);
-					ProtocolStorage.clearData(oldaddress);
+					ConnectionImpl connection = ProtocolStorage.removeConnection(oldaddress);
 					SocketAddress newaddress = new InetSocketAddress(split[1], ((InetSocketAddress) oldaddress).getPort());
 					networkManager.l = newaddress;
-					ProtocolStorage.setProtocolVersion(newaddress, version);
+					ProtocolStorage.setConnection(newaddress, connection);
 					networkManager.spoofedUUID = UUIDTypeAdapter.fromString(split[2]);
 					if (split.length == 4) {
 						networkManager.spoofedProfile = gson.fromJson(split[3], Property[].class);

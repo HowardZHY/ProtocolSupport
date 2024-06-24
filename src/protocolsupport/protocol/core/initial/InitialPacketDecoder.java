@@ -14,7 +14,9 @@ import io.netty.util.concurrent.Future;
 import net.minecraft.server.v1_8_R3.MinecraftServer;
 
 import protocolsupport.ProtocolSupport;
+import protocolsupport.api.Connection;
 import protocolsupport.api.ProtocolVersion;
+import protocolsupport.protocol.ConnectionImpl;
 import protocolsupport.protocol.core.ChannelHandlers;
 import protocolsupport.protocol.core.IPipeLineBuilder;
 import protocolsupport.protocol.storage.ProtocolStorage;
@@ -167,7 +169,8 @@ public class InitialPacketDecoder extends SimpleChannelInboundHandler<ByteBuf> {
 		if (MinecraftServer.getServer().isDebugging()) {
 			System.out.println(ChannelUtils.getNetworkManagerSocketAddress(channel)+ " connected with protocol version "+version);
 		}
-		ProtocolStorage.setProtocolVersion(ChannelUtils.getNetworkManagerSocketAddress(channel), version);
+		ConnectionImpl connection = ProtocolStorage.getConnection(ChannelUtils.getNetworkManagerSocketAddress(channel));
+		connection.setProtocolVersion(version);
 		channel.pipeline().remove(ChannelHandlers.INITIAL_DECODER);
 		pipelineBuilders.get(version).buildPipeLine(channel, version);
 		receivedData.readerIndex(0);

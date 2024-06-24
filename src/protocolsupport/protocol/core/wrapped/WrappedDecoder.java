@@ -55,7 +55,7 @@ public class WrappedDecoder extends ByteToMessageDecoder {
 				PlayerDisconnectEvent event = new PlayerDisconnectEvent(addr, username);
 				Bukkit.getPluginManager().callEvent(event);
 			}
-			ProtocolStorage.clearData(addr);
+			ProtocolStorage.removeConnection(addr);
 		} catch (Throwable t) {
 			if (MinecraftServer.getServer().isDebugging()) {
 				t.printStackTrace();

@@ -2,6 +2,7 @@ package protocolsupport.utils.netty;
 
 import java.net.SocketAddress;
 
+import net.minecraft.server.v1_8_R3.PacketListener;
 import org.bukkit.entity.Player;
 
 import io.netty.buffer.ByteBuf;
@@ -15,6 +16,14 @@ public class ChannelUtils {
 
 	public static Player getBukkitPlayer(Channel channel) {
 		return getPlayer(getNetworkManager(channel)).getBukkitEntity();
+	}
+
+	public static Player getBukkitPlayer(NetworkManager networkManager) {
+		PacketListener listener = networkManager.getPacketListener();
+		if (listener instanceof PlayerConnection) {
+			return ((PlayerConnection) networkManager.getPacketListener()).player.getBukkitEntity();
+		}
+		return null;
 	}
 
 	public static EntityPlayer getPlayer(NetworkManager networkManager) {

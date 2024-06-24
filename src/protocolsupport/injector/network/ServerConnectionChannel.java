@@ -9,6 +9,8 @@ import io.netty.channel.ChannelOption;
 import net.minecraft.server.v1_8_R3.EnumProtocolDirection;
 import net.minecraft.server.v1_8_R3.MinecraftServer;
 import net.minecraft.server.v1_8_R3.NetworkManager;
+import protocolsupport.api.ProtocolVersion;
+import protocolsupport.protocol.ConnectionImpl;
 import protocolsupport.protocol.core.ChannelHandlers;
 import protocolsupport.protocol.core.FakePacketListener;
 import protocolsupport.protocol.core.initial.InitialPacketDecoder;
@@ -17,6 +19,8 @@ import protocolsupport.protocol.core.wrapped.WrappedDecoder;
 import protocolsupport.protocol.core.wrapped.WrappedEncoder;
 import protocolsupport.protocol.core.wrapped.WrappedPrepender;
 import protocolsupport.protocol.core.wrapped.WrappedSplitter;
+import protocolsupport.protocol.pipeline.common.LogicHandler;
+import protocolsupport.protocol.storage.ProtocolStorage;
 
 public class ServerConnectionChannel extends ChannelInitializer<Channel> {
 
@@ -44,14 +48,17 @@ public class ServerConnectionChannel extends ChannelInitializer<Channel> {
 				System.err.println("Unable to set TCP_NODELAY option: " + channelexception.getMessage());
 			}
 		}
+		NetworkManager networkmanager = new NetworkManager(EnumProtocolDirection.SERVERBOUND);
+		ConnectionImpl connection = new ConnectionImpl(networkmanager, ProtocolVersion.UNKNOWN);
+		ProtocolStorage.setConnection(channel.remoteAddress(), connection);
 		channel.pipeline()
 		.addLast("timeout", new SimpleReadTimeoutHandler(30))
 		.addLast(ChannelHandlers.INITIAL_DECODER, new InitialPacketDecoder())
 		.addLast(ChannelHandlers.SPLITTER, new WrappedSplitter())
 		.addLast(ChannelHandlers.DECODER, new WrappedDecoder())
 		.addLast(ChannelHandlers.PREPENDER, new WrappedPrepender())
-		.addLast(ChannelHandlers.ENCODER, new WrappedEncoder());
-		NetworkManager networkmanager = new NetworkManager(EnumProtocolDirection.SERVERBOUND);
+		.addLast(ChannelHandlers.ENCODER, new WrappedEncoder())
+		.addLast(ChannelHandlers.LOGIC, new LogicHandler(connection));
 		networkmanager.a(new FakePacketListener());
 		networkManagers.add(networkmanager);
 		channel.pipeline().addLast(ChannelHandlers.NETWORK_MANAGER, networkmanager);

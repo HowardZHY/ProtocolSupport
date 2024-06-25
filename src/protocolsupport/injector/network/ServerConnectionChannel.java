@@ -57,8 +57,8 @@ public class ServerConnectionChannel extends ChannelInitializer<Channel> {
 		.addLast(ChannelHandlers.SPLITTER, new WrappedSplitter())
 		.addLast(ChannelHandlers.DECODER, new WrappedDecoder())
 		.addLast(ChannelHandlers.PREPENDER, new WrappedPrepender())
-		.addLast(ChannelHandlers.ENCODER, new WrappedEncoder())
-		.addLast(ChannelHandlers.LOGIC, new LogicHandler(connection));
+		.addLast(ChannelHandlers.ENCODER, new WrappedEncoder());
+		//.addLast(ChannelHandlers.LOGIC, new LogicHandler(connection));
 		networkmanager.a(new FakePacketListener());
 		networkManagers.add(networkmanager);
 		channel.pipeline().addLast(ChannelHandlers.NETWORK_MANAGER, networkmanager);

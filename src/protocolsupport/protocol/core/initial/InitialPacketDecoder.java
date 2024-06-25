@@ -37,6 +37,7 @@ public class InitialPacketDecoder extends SimpleChannelInboundHandler<ByteBuf> {
 	}
 
 	private static final EnumMap<ProtocolVersion, IPipeLineBuilder> pipelineBuilders = new EnumMap<ProtocolVersion, IPipeLineBuilder>(ProtocolVersion.class);
+
 	static {
 		// 1.8
 		IPipeLineBuilder builder = new protocolsupport.protocol.transformer.v_1_8.PipeLineBuilder();
@@ -161,7 +162,7 @@ public class InitialPacketDecoder extends SimpleChannelInboundHandler<ByteBuf> {
 			if (handshakeversion != null) {
 				setProtocol(channel, handshakeversion);
 			}
-		} catch (EOFSignal ex) {
+		} catch (EOFSignal ignored) {
 		}
 	}
 
@@ -172,7 +173,7 @@ public class InitialPacketDecoder extends SimpleChannelInboundHandler<ByteBuf> {
 		ConnectionImpl connection = ProtocolStorage.getConnection(ChannelUtils.getNetworkManagerSocketAddress(channel));
 		connection.setProtocolVersion(version);
 		channel.pipeline().remove(ChannelHandlers.INITIAL_DECODER);
-		pipelineBuilders.get(version).buildPipeLine(channel, version);
+		pipelineBuilders.get(version).buildPipeLine(channel, connection);
 		receivedData.readerIndex(0);
 		channel.pipeline().firstContext().fireChannelRead(receivedData);
 	}

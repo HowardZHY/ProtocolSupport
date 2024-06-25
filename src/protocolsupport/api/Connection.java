@@ -1,16 +1,19 @@
 package protocolsupport.api;
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 
+import com.google.common.base.Objects;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ReadOnlyByteBuf;
 import org.bukkit.entity.Player;
 
 public abstract class Connection {
 
-    protected ProtocolVersion version;
+    public volatile ProtocolVersion version;
+
     public Connection(ProtocolVersion version) {
         this.version = version;
     }
@@ -30,6 +33,20 @@ public abstract class Connection {
     public abstract void receivePacket(Object packet) throws ExecutionException;
 
     public abstract void sendPacket(Object packet);
+
+    public abstract void sendRawPacket(byte[] data);
+
+    public abstract void receiveRawPacket(byte[] data);
+
+    protected final CopyOnWriteArrayList<PacketListener> packetlisteners = new CopyOnWriteArrayList<>();
+
+    public void addPacketListener(PacketListener listener) {
+        packetlisteners.add(listener);
+    }
+
+    public void removePacketListener(PacketListener listener) {
+        packetlisteners.remove(listener);
+    }
 
     protected final CopyOnWriteArrayList<PacketSendListener> sendListeners = new CopyOnWriteArrayList<>();
 
@@ -67,6 +84,139 @@ public abstract class Connection {
 
     public boolean hasMetadata(String key) {
         return metadata.containsKey(key);
+    }
+
+    public abstract static class PacketListener {
+
+        /**
+         * Override to handle native packet sending
+         * Note: PacketEvent and it's data is only valid while handling the packet
+         * @param event packet event
+         */
+        public void onPacketSending(PacketEvent event) {
+        }
+
+        /**
+         * Override to handle native packet receiving
+         * Note: PacketEvent and it's data is only valid while handling the packet
+         * Note: Based on client version this the received data might be a part of packet, not a full one
+         * @param event packet event
+         */
+        public void onPacketReceiving(PacketEvent event) {
+        }
+
+        /**
+         * Override to handle raw packet sending
+         * Note: PacketEvent and it's data is only valid while handling the packet
+         * @param event packet event
+         */
+        public void onRawPacketSending(RawPacketEvent event) {
+        }
+
+        /**
+         * Override to handle raw packet sending
+         * @param event packet event
+         */
+        public void onRawPacketReceiving(RawPacketEvent event) {
+        }
+
+        public static class PacketEvent {
+
+            protected Object packet;
+            protected boolean cancelled;
+
+            /**
+             * Returns packet
+             * @return native packet instance
+             */
+            public Object getPacket() {
+                return packet;
+            }
+
+            /**
+             * Sets packet
+             * @param packet native packet instance
+             */
+            public void setPacket(Object packet) {
+                this.packet = packet;
+            }
+
+            /**
+             * Returns if packet is cancelled
+             * @return true if packet is cancelled, false otherwise
+             */
+            public boolean isCancelled() {
+                return cancelled;
+            }
+
+            /**
+             * Sets if packet is cancelled
+             * @param cancelled true if packet is cancelled, false otherwise
+             */
+            public void setCancelled(boolean cancelled) {
+                this.cancelled = cancelled;
+            }
+        }
+
+        public static class RawPacketEvent {
+
+            protected ByteBuf data;
+            protected boolean cancelled;
+
+            /**
+             * Returns read only packet data
+             * @return read only packet data
+             */
+            public ByteBuf getData() {
+                return new ReadOnlyByteBuf(data);
+            }
+
+            /**
+             * Sets packet data
+             * A copy of passed ByteBuf is made, and passed ByteBuf is not released
+             * @param data packet data
+             */
+            public void setData(ByteBuf data) {
+                this.data.release();
+                this.data = data.copy();
+            }
+
+            /**
+             * Returns if packet is cancelled
+             * @return true if packet is cancelled, false otherwise
+             */
+            public boolean isCancelled() {
+                return cancelled;
+            }
+
+            /**
+             * Sets if packet is cancelled
+             * @param cancelled true if packet is cancelled, false otherwise
+             */
+            public void setCancelled(boolean cancelled) {
+                this.cancelled = cancelled;
+            }
+
+        }
+
+    }
+
+    private static class DeprecatedPacketListener extends PacketListener {
+        private final Object deprecatedlistener;
+        public DeprecatedPacketListener(Object deprecatedlistener) {
+            this.deprecatedlistener = deprecatedlistener;
+        }
+        @Override
+        public int hashCode() {
+            return deprecatedlistener.hashCode();
+        }
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof DeprecatedPacketListener) {
+                return Objects.equal(deprecatedlistener, ((DeprecatedPacketListener) obj).deprecatedlistener);
+            }
+            return false;
+        }
     }
 
     @FunctionalInterface

@@ -113,7 +113,7 @@ public class ContainerEnchantTable extends net.minecraft.server.v1_8_R3.Containe
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean a(final EntityHuman entityhuman, final int slot) {
-		boolean supportsLapisSlot = ProtocolSupportAPI.getProtocolVersion((Player) entityhuman.getBukkitEntity()) == ProtocolVersion.MINECRAFT_1_8;
+		boolean supportsLapisSlot = ProtocolSupportAPI.getProtocolVersion((Player) entityhuman.getBukkitEntity()).isAfter(ProtocolVersion.MINECRAFT_1_7_10);
 		net.minecraft.server.v1_8_R3.ItemStack itemstack = enchantSlots.getItem(0);
 		net.minecraft.server.v1_8_R3.ItemStack lapis = enchantSlots.getItem(1);
 		final int cost = slot + 1;
@@ -152,7 +152,7 @@ public class ContainerEnchantTable extends net.minecraft.server.v1_8_R3.Containe
 					} else {
 						item.addUnsafeEnchantment(entry.getKey(), entry.getValue());
 					}
-				} catch (IllegalArgumentException ex) {
+				} catch (IllegalArgumentException ignored) {
 				}
 			}
 			entityhuman.enchantDone(supportsLapisSlot ? cost : costs[slot]); //take old levels count from clients that don't support lapis slot

@@ -20,6 +20,7 @@ public class ChunkMulti extends MiddleChunkMulti<RecyclableCollection<PacketData
         ByteArrayOutputStream stream = new ByteArrayOutputStream(23000);
         for (int i = 0; i < data.length; i++) {
             stream.write(ChunkTransformer.toPre18Data(data[i], bitmap[i], version));
+            //TODO?
         }
         byte[] compressed = Compressor.compressStatic(stream.toByteArray());
         serializer.writeShort(data.length);

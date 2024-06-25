@@ -80,7 +80,7 @@ public class PacketDataSerializer extends net.minecraft.server.v1_8_R3.PacketDat
 
 	@Override
 	public void a(NBTTagCompound nbttagcompound) {
-		if (getVersion().isBefore(ProtocolVersion.MINECRAFT_1_8)) {
+		if (getVersion().isBeforeOrEq(ProtocolVersion.MINECRAFT_1_7_10)) {
 			if (nbttagcompound == null) {
 				writeShort(-1);
 			} else {
@@ -113,7 +113,7 @@ public class PacketDataSerializer extends net.minecraft.server.v1_8_R3.PacketDat
 		Item item = itemstack.getItem();
 		NBTTagCompound nbttagcompound = itemstack.getTag();
 		if (nbttagcompound != null) {
-			if (getVersion().isBefore(ProtocolVersion.MINECRAFT_1_8) && item == Items.WRITTEN_BOOK) {
+			if (getVersion().isBeforeOrEq(ProtocolVersion.MINECRAFT_1_7_10) && item == Items.WRITTEN_BOOK) {
 				if (nbttagcompound.hasKeyOfType("pages", 9)) {
 					NBTTagList pages = nbttagcompound.getList("pages", 8);
 					NBTTagList newpages = new NBTTagList();
@@ -168,7 +168,7 @@ public class PacketDataSerializer extends net.minecraft.server.v1_8_R3.PacketDat
 
 	@Override
 	public NBTTagCompound h() throws IOException {
-		if (getVersion().isBefore(ProtocolVersion.MINECRAFT_1_8)) {
+		if (getVersion().isBeforeOrEq(ProtocolVersion.MINECRAFT_1_7_10)) {
 			final short length = readShort();
 			if (length < 0) {
 				return null;

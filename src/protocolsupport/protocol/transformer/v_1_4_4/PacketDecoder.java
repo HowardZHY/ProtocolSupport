@@ -86,7 +86,11 @@ public class PacketDecoder implements IPacketDecoder {
 	}
 
 	private final ReplayingDecoderBuffer buffer = new ReplayingDecoderBuffer();
-	private final PacketDataSerializer serializer = new PacketDataSerializer(buffer, ProtocolVersion.MINECRAFT_1_4_7);
+	private final PacketDataSerializer serializer;
+
+	public PacketDecoder(ProtocolVersion version) {
+		serializer = new PacketDataSerializer(buffer, version);
+	}
 
 	@Override
 	public void decode(ChannelHandlerContext ctx, ByteBuf input, List<Object> list) throws Exception {

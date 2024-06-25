@@ -1,21 +1,21 @@
 package protocolsupport.protocol;
 
-import java.net.InetSocketAddress;
-import java.util.concurrent.ExecutionException;
-
-import org.bukkit.entity.Player;
-
-import net.minecraft.server.v1_8_R3.CancelledPacketHandleException;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.server.v1_8_R3.NetworkManager;
-import net.minecraft.server.v1_8_R3.Packet;
-import net.minecraft.server.v1_8_R3.PacketListener;
+import org.bukkit.entity.Player;
 import protocolsupport.api.Connection;
 import protocolsupport.api.ProtocolVersion;
+import protocolsupport.protocol.core.ChannelHandlers;
 import protocolsupport.utils.netty.ChannelUtils;
+
+import java.net.InetSocketAddress;
 
 public class ConnectionImpl extends Connection {
 
     private final NetworkManager networkmanager;
+
     public ConnectionImpl(NetworkManager networkmanager, ProtocolVersion version) {
         super(version);
         this.networkmanager = networkmanager;
@@ -42,58 +42,156 @@ public class ConnectionImpl extends Connection {
     }
 
     @Override
-    public void receivePacket(Object packet) throws ExecutionException {
-        @SuppressWarnings("unchecked")
-        final Packet<PacketListener> packetInst = (Packet<PacketListener>) packet;
-        Runnable packetReceive = () -> {
-            if (networkmanager.channel.isOpen()) {
-                try {
-                    packetInst.a(networkmanager.getPacketListener());
-                } catch (CancelledPacketHandleException ignored) {
-                }
-            }
-        };
-        if (networkmanager.channel.eventLoop().inEventLoop()) {
+    public void sendPacket(Object packet) {
+        runTask(() -> {
             try {
-                packetReceive.run();
+                ChannelHandlerContext ctx = networkmanager.channel.pipeline().context(ChannelHandlers.LOGIC);
+                ctx.writeAndFlush(packet);
             } catch (Throwable t) {
-                throw new ExecutionException(t);
+                System.err.println("Error occured while packet sending");
+                t.printStackTrace();
             }
-        } else {
-            try {
-                networkmanager.channel.eventLoop().submit(packetReceive).get();
-            } catch (InterruptedException ignored) {
-            }
-        }
+        });
     }
 
     @Override
-    public void sendPacket(Object packet) {
-        networkmanager.handle((Packet<?>) packet);
+    public void receivePacket(Object packet) {
+        runTask(() -> {
+            try {
+                ChannelHandlerContext ctx = networkmanager.channel.pipeline().context(ChannelHandlers.LOGIC);
+                ctx.fireChannelRead(packet);
+            } catch (Throwable t) {
+                System.err.println("Error occured while packet receiving");
+                t.printStackTrace();
+            }
+        });
+    }
+
+    @Override
+    public void sendRawPacket(byte[] data) {
+        ByteBuf dataInst = Unpooled.wrappedBuffer(data);
+        runTask(() -> {
+            try {
+                ChannelHandlerContext ctx = networkmanager.channel.pipeline().context(ChannelHandlers.RAW_CAPTURE_SEND);
+                ctx.writeAndFlush(dataInst);
+            } catch (Throwable t) {
+                System.err.println("Error occured while raw packet sending");
+                t.printStackTrace();
+            }
+        });
+    }
+
+    @Override
+    public void receiveRawPacket(byte[] data) {
+        ByteBuf dataInst = Unpooled.wrappedBuffer(data);
+        runTask(() -> {
+            try {
+                ChannelHandlerContext ctx = networkmanager.channel.pipeline().context(ChannelHandlers.RAW_CAPTURE_RECEIVE);
+                ctx.fireChannelRead(dataInst);
+            } catch (Throwable t) {
+                System.err.println("Error occured while raw packet receiving");
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void runTask(Runnable task) {
+        if (networkmanager.channel.eventLoop().inEventLoop()) {
+            task.run();
+        } else {
+            networkmanager.channel.eventLoop().submit(task);
+        }
+    }
+
+    public void setVersion(ProtocolVersion version) {
+        this.version = version;
     }
 
     public void setProtocolVersion(ProtocolVersion version) {
         this.version = version;
     }
 
-    public boolean handlePacketSend(Object packet) {
-        boolean canSend = true;
-        for (PacketSendListener listener : sendListeners) {
-            if (!listener.onPacketSending(packet)) {
-                canSend = false;
-            }
+    private final LPacketEvent packetevent = new LPacketEvent();
+
+    private static class LPacketEvent extends PacketListener.PacketEvent {
+        public void init(Object packet) {
+            this.packet = packet;
+            this.cancelled = false;
         }
-        return canSend;
     }
 
-    public boolean handlePacketReceive(Object packet) {
-        boolean canReceive = true;
-        for (PacketReceiveListener listener : receiveListeners) {
-            if (!listener.onPacketReceiving(packet)) {
-                canReceive = false;
+    public Object handlePacketSend(Object packet) {
+        packetevent.init(packet);
+        for (PacketListener listener : packetlisteners) {
+            try {
+                listener.onPacketSending(packetevent);
+            } catch (Throwable t) {
+                System.err.println("Error occured while handling packet sending");
+                t.printStackTrace();
             }
         }
-        return canReceive;
+        return packetevent.isCancelled() ? null : packetevent.getPacket();
+    }
+
+    public Object handlePacketReceive(Object packet) {
+        packetevent.init(packet);
+        for (PacketListener listener : packetlisteners) {
+            try {
+                listener.onPacketReceiving(packetevent);
+            } catch (Throwable t) {
+                System.err.println("Error occured while handling packet receiving");
+                t.printStackTrace();
+            }
+        }
+        return packetevent.isCancelled() ? null : packetevent.getPacket();
+    }
+
+    private final LRawPacketEvent rawpacketevent = new LRawPacketEvent();
+
+    private static class LRawPacketEvent extends PacketListener.RawPacketEvent {
+        public void init(ByteBuf data) {
+            this.data = data;
+            this.cancelled = false;
+        }
+        public ByteBuf getDirectData() {
+            return this.data;
+        }
+    }
+
+    public ByteBuf handleRawPacketSend(ByteBuf data) {
+        rawpacketevent.init(data);
+        for (PacketListener listener : packetlisteners) {
+            try {
+                listener.onRawPacketSending(rawpacketevent);
+            } catch (Throwable t) {
+                System.err.println("Error occured while handling raw packet sending");
+                t.printStackTrace();
+            }
+        }
+        if (rawpacketevent.isCancelled()) {
+            rawpacketevent.getDirectData().release();
+            return null;
+        } else {
+            return rawpacketevent.getDirectData();
+        }
+    }
+
+    public ByteBuf handleRawPacketReceive(ByteBuf data) {
+        rawpacketevent.init(data);
+        for (PacketListener listener : packetlisteners) {
+            try {
+                listener.onRawPacketReceiving(rawpacketevent);
+            } catch (Throwable t) {
+                System.err.println("Error occured while handling raw packet receiving");
+                t.printStackTrace();
+            }
+        }
+        if (rawpacketevent.isCancelled()) {
+            rawpacketevent.getDirectData().release();
+            return null;
+        } else {
+            return rawpacketevent.getDirectData();
+        }
     }
 
 }

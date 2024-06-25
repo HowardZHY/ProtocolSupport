@@ -22,6 +22,7 @@
  */
 package protocolsupport.api;
 
+@SuppressWarnings("unused")
 public enum ProtocolType {
     /**
      * Pre-netty release versions of Minecraft (1.0.0 to the 1.7.2 snapshot 13w39b).
@@ -34,5 +35,8 @@ public enum ProtocolType {
     /**
      * Any version that doesn't fit in the above categories (e.g. April Fools).
      */
-    UNKNOWN
+    UNKNOWN;
+
+    public static final ProtocolType PC = RELEASE;
+
 }

@@ -1,7 +1,6 @@
 package protocolsupport.injector.network;
 
 import io.netty.channel.*;
-import net.minecraft.server.v1_8_R3.EnumProtocolDirection;
 import net.minecraft.server.v1_8_R3.MinecraftServer;
 import net.minecraft.server.v1_8_R3.NetworkManager;
 import protocolsupport.api.ProtocolVersion;
@@ -16,8 +15,9 @@ import protocolsupport.protocol.pipeline.common.LogicHandler;
 import protocolsupport.protocol.pipeline.common.RawPacketDataCaptureReceive;
 import protocolsupport.protocol.pipeline.common.RawPacketDataCaptureSend;
 import protocolsupport.protocol.storage.ProtocolStorage;
+import protocolsupport.utils.netty.ChannelInitializer;
 
-public class ServerConnectionChannel extends ChannelInitializer<Channel> {
+public class ServerConnectionChannel extends ChannelInitializer {
 
 	public ServerConnectionChannel() {}
 
@@ -40,7 +40,7 @@ public class ServerConnectionChannel extends ChannelInitializer<Channel> {
 				System.err.println("Unable to set TCP_NODELAY option: " + channelexception.getMessage());
 			}
 		}
-		NetworkManager networkmanager = new NetworkManager(EnumProtocolDirection.SERVERBOUND);
+		NetworkManager networkmanager = (NetworkManager) channel.pipeline().get(ChannelHandlers.NETWORK_MANAGER);
 		networkmanager.a(new FakePacketListener());
 		ConnectionImpl connection = new ConnectionImpl(networkmanager, ProtocolVersion.UNKNOWN);
 		connection.storeInChannel(channel);

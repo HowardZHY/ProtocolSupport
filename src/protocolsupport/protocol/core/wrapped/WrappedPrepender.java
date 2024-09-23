@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import protocolsupport.protocol.core.IPacketPrepender;
+import protocolsupport.protocol.pipeline.common.FakeFrameEncoder;
 
 public class WrappedPrepender extends MessageToByteEncoder<ByteBuf> {
 
@@ -11,11 +12,7 @@ public class WrappedPrepender extends MessageToByteEncoder<ByteBuf> {
 		super(true);
 	}
 
-	private IPacketPrepender realPrepender = new IPacketPrepender() {
-		@Override
-		public void prepend(ChannelHandlerContext ctx, ByteBuf input, ByteBuf output) throws Exception {
-		}
-	};
+	private IPacketPrepender realPrepender = new FakeFrameEncoder();
 
 	public void setRealPrepender(IPacketPrepender realEncoder) {
 		this.realPrepender = realEncoder;

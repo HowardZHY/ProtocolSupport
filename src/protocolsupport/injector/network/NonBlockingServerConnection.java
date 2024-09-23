@@ -84,7 +84,7 @@ public class NonBlockingServerConnection extends ServerConnection {
 			this.g.add(
 				new ServerBootstrap()
 				.channel(oclass)
-				.childHandler(new ServerConnectionChannel(h))
+				.childHandler(new ServerConnectionChannel())
 				.group(lazyinitvar.c())
 				.localAddress(inetaddress, port)
 				.bind().syncUninterruptibly()

@@ -10,7 +10,7 @@
 	<target name="build">
 		<mkdir dir="libs"/>
 		<mkdir dir="build/classes"/>
-		<javac srcdir="src" encoding="UTF-8" destdir="build/classes" classpath="libs/PaperSpigot.jar" debug="on"/>
+		<javac srcdir="src/" encoding="UTF-8" destdir="build/classes" classpath="libs/PaperSpigot.jar" debug="on"/>
 		<copy todir="build/classes">
 			<fileset file="src/plugin.yml"/>
 		</copy>

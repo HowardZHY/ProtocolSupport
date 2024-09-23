@@ -65,6 +65,7 @@ public abstract class AbstractLoginListener extends net.minecraft.server.v1_8_R3
 	);
 
 	protected static final Logger logger = LogManager.getLogger();
+
 	protected static final Random random = new Random();
 
 	protected final byte[] randomBytes = new byte[4];
@@ -148,8 +149,12 @@ public abstract class AbstractLoginListener extends net.minecraft.server.v1_8_R3
 
 	protected abstract boolean hasCompression();
 
-	protected void enableCompresssion(int compressionLevel) {
+	public void enableCompresssion(int compressionLevel) {
 		Channel channel = networkManager.channel;
+		this.enableCompression(channel, compressionLevel);
+	}
+
+	public void enableCompression(Channel channel, int compressionLevel) {
 		if (compressionLevel >= 0) {
 			channel.pipeline().addBefore("decoder", "decompress", new PacketDecompressor(compressionLevel));
 			channel.pipeline().addBefore("encoder", "compress", new PacketCompressor(compressionLevel));

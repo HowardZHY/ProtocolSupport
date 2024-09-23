@@ -1,30 +1,33 @@
 package protocolsupport.protocol.core.initial;
 
-import java.nio.charset.StandardCharsets;
-import java.util.EnumMap;
-import java.util.concurrent.TimeUnit;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.concurrent.Future;
-
 import net.minecraft.server.v1_8_R3.MinecraftServer;
-
+import net.minecraft.server.v1_8_R3.PacketListener;
 import protocolsupport.ProtocolSupport;
-import protocolsupport.api.Connection;
 import protocolsupport.api.ProtocolVersion;
 import protocolsupport.protocol.ConnectionImpl;
 import protocolsupport.protocol.core.ChannelHandlers;
 import protocolsupport.protocol.core.IPipeLineBuilder;
+import protocolsupport.protocol.pipeline.common.VarIntFrameDecoder;
+import protocolsupport.protocol.pipeline.common.VarIntFrameEncoder;
+import protocolsupport.protocol.pipeline.initial.EncapsulatedProtocolUtils;
 import protocolsupport.protocol.storage.ProtocolStorage;
+import protocolsupport.protocol.transformer.handlers.AbstractLoginListener;
 import protocolsupport.utils.Utils;
 import protocolsupport.utils.Utils.Converter;
 import protocolsupport.utils.netty.ChannelUtils;
 import protocolsupport.utils.netty.ReplayingDecoderBuffer;
 import protocolsupport.utils.netty.ReplayingDecoderBuffer.EOFSignal;
+
+import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
+import java.util.EnumMap;
+import java.util.concurrent.TimeUnit;
 
 public class InitialPacketDecoder extends SimpleChannelInboundHandler<ByteBuf> {
 
@@ -120,8 +123,11 @@ public class InitialPacketDecoder extends SimpleChannelInboundHandler<ByteBuf> {
 		Channel channel = ctx.channel();
 		int firstbyte = replayingBuffer.readUnsignedByte();
 		try {
-			ProtocolVersion handshakeversion = null;
 			switch (firstbyte) {
+				case 0x00: { // encapsulated protocol handsake
+					setEncapsulatedProtocol(channel, EncapsulatedProtocolUtils.readInfo(replayingBuffer));
+					break;
+				}
 				case 0xFE: { //old ping or a part of varint length
 					if (replayingBuffer.readableBytes() == 0) {
 						//no more data received, it may be old protocol, or we just not received all data yet, so delay assuming as really old protocol for some time
@@ -137,43 +143,68 @@ public class InitialPacketDecoder extends SimpleChannelInboundHandler<ByteBuf> {
 						) {
 							//definitely 1.6
 							replayingBuffer.readUnsignedShort();
-							handshakeversion = ProtocolUtils.get16PingVersion(replayingBuffer.readUnsignedByte());
+							setProtocol(channel, ProtocolUtils.get16PingVersion(replayingBuffer.readUnsignedByte()));
 						} else {
 							//it was 1.7+ handshake after all
 							//hope that there won't be any handshake packet with id 0xFA in future because it will be more difficult to support it
-							handshakeversion = attemptDecodeNettyHandshake(replayingBuffer);
+							setProtocol(channel, attemptDecodeNettyHandshake(replayingBuffer));
 						}
 					} else {
 						//1.7+ handshake
-						handshakeversion = attemptDecodeNettyHandshake(replayingBuffer);
+						setProtocol(channel, attemptDecodeNettyHandshake(replayingBuffer));
 					}
 					break;
 				}
 				case 0x02: { // <= 1.6.4 handshake
-					handshakeversion = ProtocolUtils.readOldHandshake(replayingBuffer);
+					setProtocol(channel, ProtocolUtils.readOldHandshake(replayingBuffer));
 					break;
 				}
 				default: { // >= 1.7 handshake
-					handshakeversion = attemptDecodeNettyHandshake(replayingBuffer);
+					setProtocol(channel, attemptDecodeNettyHandshake(replayingBuffer));
 					break;
 				}
-			}
-			//if we detected the protocol than we save it and process data
-			if (handshakeversion != null) {
-				setProtocol(channel, handshakeversion);
 			}
 		} catch (EOFSignal ignored) {
 		}
 	}
 
+	private void setEncapsulatedProtocol(Channel channel, EncapsulatedProtocolUtils.EncapsulatedProtocolInfo info) {
+		ConnectionImpl connection = ConnectionImpl.getFromChannel(channel);
+		if (MinecraftServer.getServer().isDebugging()) {
+			ProtocolSupport.logInfo(connection.getAddress() + " connected with protocol version " + info.getVersion());
+		}
+		channel.pipeline().remove(ChannelHandlers.INITIAL_DECODER);
+		connection.changeAddress(new InetSocketAddress(info.getAddress(), connection.getAddress().getPort()));
+		ProtocolVersion version = info.getVersion();
+		if (!version.isSupported()) {
+			version = version.isBeforeOrEq(ProtocolVersion.MINECRAFT_1_6_4) ? ProtocolVersion.MINECRAFT_LEGACY : ProtocolVersion.MINECRAFT_FUTURE;
+		}
+		connection.setVersion(version);
+		if (info.hasCompression()) {
+			PacketListener listener = connection.getNetworkmanager().getPacketListener();
+			if (listener instanceof AbstractLoginListener) {
+				AbstractLoginListener listener1 = (AbstractLoginListener) listener;
+				listener1.enableCompression(channel, MinecraftServer.getServer().aK());
+			}
+		}
+		ChannelHandlers.getSplitter(channel.pipeline()).setRealSplitter(new VarIntFrameDecoder());
+		ChannelHandlers.getPrepender(channel.pipeline()).setRealPrepender(new VarIntFrameEncoder());
+		pipelineBuilders.get(version).buildCodec(channel, connection);
+	}
+
 	protected void setProtocol(final Channel channel, ProtocolVersion version) throws Exception {
+		ConnectionImpl connection = ProtocolStorage.getConnection(ChannelUtils.getNetworkManagerSocketAddress(channel));
 		if (MinecraftServer.getServer().isDebugging()) {
 			System.out.println(ChannelUtils.getNetworkManagerSocketAddress(channel)+ " connected with protocol version "+version);
 		}
-		ConnectionImpl connection = ProtocolStorage.getConnection(ChannelUtils.getNetworkManagerSocketAddress(channel));
-		connection.setProtocolVersion(version);
 		channel.pipeline().remove(ChannelHandlers.INITIAL_DECODER);
-		pipelineBuilders.get(version).buildPipeLine(channel, connection);
+		if (!version.isSupported()) {
+			version = version.isBeforeOrEq(ProtocolVersion.MINECRAFT_1_6_4) ? ProtocolVersion.MINECRAFT_LEGACY : ProtocolVersion.MINECRAFT_FUTURE;
+		}
+		connection.setProtocolVersion(version);
+		IPipeLineBuilder builder = pipelineBuilders.get(version);
+		builder.buildPipeLine(channel, connection);
+		builder.buildCodec(channel, connection);
 		receivedData.readerIndex(0);
 		channel.pipeline().firstContext().fireChannelRead(receivedData);
 	}

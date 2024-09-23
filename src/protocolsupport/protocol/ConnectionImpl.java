@@ -2,23 +2,33 @@ package protocolsupport.protocol;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.AttributeKey;
 import net.minecraft.server.v1_8_R3.NetworkManager;
 import org.bukkit.entity.Player;
 import protocolsupport.api.Connection;
 import protocolsupport.api.ProtocolVersion;
 import protocolsupport.protocol.core.ChannelHandlers;
+import protocolsupport.protocol.storage.ProtocolStorage;
 import protocolsupport.utils.netty.ChannelUtils;
 
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 
 public class ConnectionImpl extends Connection {
 
-    private final NetworkManager networkmanager;
+    protected static final AttributeKey<ConnectionImpl> key = AttributeKey.valueOf("PSConnectionImpl");
+
+    protected final NetworkManager networkmanager;
 
     public ConnectionImpl(NetworkManager networkmanager, ProtocolVersion version) {
         super(version);
         this.networkmanager = networkmanager;
+    }
+
+    public NetworkManager getNetworkmanager() {
+        return networkmanager;
     }
 
     @Override
@@ -32,13 +42,33 @@ public class ConnectionImpl extends Connection {
     }
 
     @Override
+    public InetSocketAddress getRawAddress() {
+        return (InetSocketAddress) networkmanager.getRawAddress();
+    }
+
+    @Override
     public InetSocketAddress getAddress() {
         return (InetSocketAddress) networkmanager.getSocketAddress();
     }
 
     @Override
+    public void changeAddress(InetSocketAddress newRemote) {
+        SocketAddress primaryaddr = networkmanager.getRawAddress();
+        ProtocolStorage.addAddress(primaryaddr, newRemote);
+        networkmanager.l = primaryaddr;
+    }
+
+    @Override
     public Player getPlayer() {
         return ChannelUtils.getBukkitPlayer(networkmanager);
+    }
+
+    public static ConnectionImpl getFromChannel(Channel channel) {
+        return channel.attr(key).get();
+    }
+
+    public void storeInChannel(Channel channel) {
+        channel.attr(key).set(this);
     }
 
     @Override
@@ -193,5 +223,4 @@ public class ConnectionImpl extends Connection {
             return rawpacketevent.getDirectData();
         }
     }
-
 }

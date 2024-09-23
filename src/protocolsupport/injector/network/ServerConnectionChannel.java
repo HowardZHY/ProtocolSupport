@@ -1,11 +1,6 @@
 package protocolsupport.injector.network;
 
-import java.util.List;
-
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelException;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
+import io.netty.channel.*;
 import net.minecraft.server.v1_8_R3.EnumProtocolDirection;
 import net.minecraft.server.v1_8_R3.MinecraftServer;
 import net.minecraft.server.v1_8_R3.NetworkManager;
@@ -15,19 +10,16 @@ import protocolsupport.protocol.core.ChannelHandlers;
 import protocolsupport.protocol.core.FakePacketListener;
 import protocolsupport.protocol.core.initial.InitialPacketDecoder;
 import protocolsupport.protocol.core.timeout.SimpleReadTimeoutHandler;
-import protocolsupport.protocol.core.wrapped.WrappedDecoder;
-import protocolsupport.protocol.core.wrapped.WrappedEncoder;
 import protocolsupport.protocol.core.wrapped.WrappedPrepender;
 import protocolsupport.protocol.core.wrapped.WrappedSplitter;
 import protocolsupport.protocol.pipeline.common.LogicHandler;
+import protocolsupport.protocol.pipeline.common.RawPacketDataCaptureReceive;
+import protocolsupport.protocol.pipeline.common.RawPacketDataCaptureSend;
 import protocolsupport.protocol.storage.ProtocolStorage;
 
 public class ServerConnectionChannel extends ChannelInitializer<Channel> {
 
-	private final List<NetworkManager> networkManagers;
-	public ServerConnectionChannel(List<NetworkManager> networkManagers) {
-		this.networkManagers = networkManagers;
-	}
+	public ServerConnectionChannel() {}
 
 	private static final int IPTOS_THROUGHPUT = 0x08;
 	private static final int IPTOS_LOWDELAY = 0x10;
@@ -49,19 +41,20 @@ public class ServerConnectionChannel extends ChannelInitializer<Channel> {
 			}
 		}
 		NetworkManager networkmanager = new NetworkManager(EnumProtocolDirection.SERVERBOUND);
-		ConnectionImpl connection = new ConnectionImpl(networkmanager, ProtocolVersion.UNKNOWN);
-		ProtocolStorage.setConnection(channel.remoteAddress(), connection);
-		channel.pipeline()
-		.addLast("timeout", new SimpleReadTimeoutHandler(30))
-		.addLast(ChannelHandlers.INITIAL_DECODER, new InitialPacketDecoder())
-		.addLast(ChannelHandlers.SPLITTER, new WrappedSplitter())
-		.addLast(ChannelHandlers.DECODER, new WrappedDecoder())
-		.addLast(ChannelHandlers.PREPENDER, new WrappedPrepender())
-		.addLast(ChannelHandlers.ENCODER, new WrappedEncoder());
-		//.addLast(ChannelHandlers.LOGIC, new LogicHandler(connection));
 		networkmanager.a(new FakePacketListener());
-		networkManagers.add(networkmanager);
-		channel.pipeline().addLast(ChannelHandlers.NETWORK_MANAGER, networkmanager);
+		ConnectionImpl connection = new ConnectionImpl(networkmanager, ProtocolVersion.UNKNOWN);
+		connection.storeInChannel(channel);
+		ProtocolStorage.setConnection(channel.remoteAddress(), connection);
+		ChannelPipeline pipeline = channel.pipeline();
+		pipeline.addAfter(ChannelHandlers.TIMEOUT, ChannelHandlers.INITIAL_DECODER, new InitialPacketDecoder());
+		pipeline.addBefore(ChannelHandlers.NETWORK_MANAGER, ChannelHandlers.LOGIC, new LogicHandler(connection));
+		pipeline.remove("legacy_query");
+		pipeline.replace(ChannelHandlers.TIMEOUT, ChannelHandlers.TIMEOUT, new SimpleReadTimeoutHandler(30));
+		pipeline.replace(ChannelHandlers.SPLITTER, ChannelHandlers.SPLITTER, new WrappedSplitter());
+		pipeline.replace(ChannelHandlers.PREPENDER, ChannelHandlers.PREPENDER, new WrappedPrepender());
+		pipeline.addAfter(ChannelHandlers.PREPENDER, ChannelHandlers.RAW_CAPTURE_SEND, new RawPacketDataCaptureSend(connection));
+		pipeline.addAfter(ChannelHandlers.SPLITTER, ChannelHandlers.RAW_CAPTURE_RECEIVE, new RawPacketDataCaptureReceive(connection));
+		//channel.pipeline().addLast(ChannelHandlers.NETWORK_MANAGER, networkmanager);
 	}
 
 }

@@ -10,7 +10,10 @@ public class PipeLineBuilder implements IPipeLineBuilder {
 	private static final LegacyLoginAndPingHandler legacyHandler = new LegacyLoginAndPingHandler();
 
 	@Override
-	public void buildPipeLine(Channel channel, Connection connection) {
+	public void buildPipeLine(Channel channel, Connection connection) {}
+
+	@Override
+	public void buildCodec(Channel channel, Connection connection) {
 		channel.pipeline().addAfter(ChannelHandlers.TIMEOUT, ChannelHandlers.LEGACY_KICK, legacyHandler);
 	}
 

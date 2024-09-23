@@ -86,21 +86,7 @@ public class BasicInjector {
 
 		protected void inject(ChannelFuture future) {
 			Channel channel = future.channel();
-			try {
-				ChannelHandler serverMainHandler = null;
-				for (ChannelHandler handler : channel.pipeline().toMap().values()) {
-					if (handler.getClass().getName().equals("io.netty.bootstrap.ServerBootstrap$ServerBootstrapAcceptor")) {
-						serverMainHandler = handler;
-						break;
-					}
-				}
-				if (serverMainHandler == null) {
-					throw new IllegalStateException("Unable to find default netty channel initializer");
-				}
-				Utils.setAccessible(serverMainHandler.getClass().getDeclaredField("childHandler")).set(serverMainHandler, new ServerConnectionChannel(networkManagersList));
-			} catch (Exception e) {
-				SneakyThrow.sneaky(e);
-			}
+			channel.pipeline().addFirst(new NettyServerChannelHandler());
 			synchronized (networkManagersList) {
 				for (NetworkManager nm : networkManagersList) {
 					if (nm.channel.localAddress().equals(channel.localAddress())) {

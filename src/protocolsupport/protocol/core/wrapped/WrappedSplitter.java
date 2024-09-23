@@ -6,14 +6,11 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import protocolsupport.protocol.core.IPacketSplitter;
+import protocolsupport.protocol.pipeline.common.FakeFrameDecoder;
 
 public class WrappedSplitter extends ByteToMessageDecoder {
 
-	private IPacketSplitter realSplitter = new IPacketSplitter() {
-		@Override
-		public void split(ChannelHandlerContext ctx, ByteBuf input, List<Object> list) throws Exception {
-		}
-	};
+	private IPacketSplitter realSplitter = new FakeFrameDecoder();
 
 	public void setRealSplitter(IPacketSplitter realSplitter) {
 		this.realSplitter = realSplitter;

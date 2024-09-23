@@ -8,7 +8,13 @@ import java.util.concurrent.ExecutionException;
 import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ReadOnlyByteBuf;
+import io.netty.channel.ChannelPipeline;
 import org.bukkit.entity.Player;
+import protocolsupport.protocol.core.ChannelHandlers;
+import protocolsupport.protocol.core.IPacketPrepender;
+import protocolsupport.protocol.core.IPacketSplitter;
+import protocolsupport.protocol.core.wrapped.WrappedPrepender;
+import protocolsupport.protocol.core.wrapped.WrappedSplitter;
 
 public abstract class Connection {
 
@@ -22,7 +28,11 @@ public abstract class Connection {
 
     public abstract boolean isConnected();
 
+    public abstract InetSocketAddress getRawAddress();
+
     public abstract InetSocketAddress getAddress();
+
+    public abstract void changeAddress(InetSocketAddress newRemote);
 
     public abstract Player getPlayer();
 
@@ -229,4 +239,8 @@ public abstract class Connection {
         public boolean onPacketReceiving(Object packet);
     }
 
+    public void setFraming(ChannelPipeline pipeline, IPacketSplitter splitter, IPacketPrepender prepender) {
+        ((WrappedSplitter) pipeline.get(ChannelHandlers.SPLITTER)).setRealSplitter(splitter);
+        ((WrappedPrepender) pipeline.get(ChannelHandlers.PREPENDER)).setRealPrepender(prepender);
+    }
 }

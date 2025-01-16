@@ -34,7 +34,7 @@ public abstract class MiddlePosition<T> extends ClientBoundMiddlePacket<T> {
 			y += location.getY();
 		}
 		if ((field & 0x04) != 0) {
-			z += location.getX();
+			z += location.getZ();
 		}
 		if ((field & 0x08) != 0) {
 			yaw += location.getYaw();

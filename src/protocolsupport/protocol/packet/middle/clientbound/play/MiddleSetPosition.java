@@ -38,7 +38,7 @@ public abstract class MiddleSetPosition extends ClientBoundMiddlePacket {
 				y += location.getY();
 			}
 			if ((flags & 0x04) != 0) {
-				z += location.getX();
+				z += location.getZ();
 			}
 			if ((flags & 0x08) != 0) {
 				pitch += location.getPitch();

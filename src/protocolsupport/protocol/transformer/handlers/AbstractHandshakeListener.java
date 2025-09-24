@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
+import com.viaversion.viaversion.api.Via;
 import org.apache.logging.log4j.LogManager;
 import org.spigotmc.SpigotConfig;
 
@@ -55,7 +56,12 @@ public abstract class AbstractHandshakeListener extends HandshakeListener {
 					LogManager.getLogger().debug("Failed to check connection throttle", t);
 				}
 				if (packethandshakinginsetprotocol.b() != ProtocolVersion.getLatest().getId() && packethandshakinginsetprotocol.b() != 48) {
-					final ChatComponentText chatcomponenttext = new ChatComponentText("Unsupported protocol version "+packethandshakinginsetprotocol.b()+" Please use 1.8.X ");
+					String via = "";
+					try {
+						via = Via.getConfig().getBlockedDisconnectMsg();
+					} catch (Exception ignored) {}
+					String msg = via + " Unsupported protocol version " + packethandshakinginsetprotocol.b();
+					final ChatComponentText chatcomponenttext = new ChatComponentText(msg);
 					this.networkManager.handle(new PacketLoginOutDisconnect(chatcomponenttext));
 					this.networkManager.close(chatcomponenttext);
 					break;

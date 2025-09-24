@@ -10,5 +10,6 @@
     <orderEntry type="library" name="BuildProcessor" level="project" />
     <orderEntry type="library" name="PaperSpigot" level="project" />
     <orderEntry type="library" name="ViaVersion-4.9.0-23w44a-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="ViaVersion-5.4.2-downgraded" level="project" />
   </component>
 </module>

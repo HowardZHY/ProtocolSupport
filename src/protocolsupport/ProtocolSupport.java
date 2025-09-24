@@ -21,35 +21,26 @@ import protocolsupport.utils.netty.Compressor;
 public class ProtocolSupport extends JavaPlugin {
 
 	@Override
-	public void onLoad() {}
+	public void onLoad() {
+		try {
+			Allocator.init();
+			Compressor.init();
+			ServerBoundPacket.init();
+			ClientBoundPacket.init();
+			InitialPacketDecoder.init();
+			AbstractLoginListener.init();
+			NettyInjector.inject();
+			ServerInjector.inject();
+		} catch (Throwable t) {
+			t.printStackTrace();
+			Bukkit.shutdown();
+		}
+	}
 
 	@Override
 	public void onEnable() {
-		Listener listener = new Listener() {
-			@EventHandler
-			public void onLogin(PlayerLoginEvent event) {
-				event.disallow(PlayerLoginEvent.Result.KICK_OTHER, "Server is still loading!");
-			}
-		};
-		Bukkit.getPluginManager().registerEvents(listener, this);
-		Bukkit.getScheduler().runTask(this, () -> {
-			try {
-				Allocator.init();
-				Compressor.init();
-				ServerBoundPacket.init();
-				ClientBoundPacket.init();
-				InitialPacketDecoder.init();
-				AbstractLoginListener.init();
-				NettyInjector.inject();
-				ServerInjector.inject();
-			} catch (Throwable t) {
-				t.printStackTrace();
-				Bukkit.shutdown();
-			}
-			getCommand("protocolsupport").setExecutor(new CommandHandler());
-			getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-			HandlerList.unregisterAll(listener);
-		});
+		getCommand("protocolsupport").setExecutor(new CommandHandler());
+		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 	}
 
 	@Override
